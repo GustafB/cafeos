@@ -74,6 +74,7 @@
     unzip
     greetd.tuigreet
 
+    hyprlock
     swww
     waybar
     rofi
@@ -118,13 +119,15 @@ services = {
     settings = {
       default_session = {
         user = username;
-	command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
       };
     };
   };
   openssh.enable = true;
   libinput.enable = true;
 };
+
+security.pam.services.hyprlock = {};
 
 
 hardware.nvidia = {
