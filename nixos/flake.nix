@@ -5,18 +5,29 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
-    let
-      system = "aarch64-linux";
-      host = "laptop";
-      username = "cafebabe";
-    in
+  outputs = 
+    { nixpkgs, home-manager, ... }@inputs:
 
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+  let
+    system = "aarch64-linux";
+    host = "laptop";
+    username = "cafebabe";
+  in
+
+  {
+    nixosConfigurations = {
         "${host}" = nixpkgs.lib.nixosSystem {
+	    specialArgs = {
+	    inherit system;
+	    inherit inputs;
+	    inherit username;
+	    inherit host;
+	    };
             modules = [
+                ./hosts/${host}/configuration.nix
                 home-manager.nixosModules.home-manager
                 {
                     home-manager.extraSpecialArgs = {

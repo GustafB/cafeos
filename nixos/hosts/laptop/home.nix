@@ -4,11 +4,12 @@ let
 in
 {
     home.username = username;
-    home.homeDirectory = "/home/${username}"
+    home.homeDirectory = "/home/${username}";
+    home.stateVersion = "24.05";
 
     imports = [
-        "../../config/hyprland.nix"
-        "../../config/neovim.nix"
+        ../../config/hyprland.nix
+        ../../config/neovim.nix
     ];
 
     programs.git = {
@@ -17,11 +18,8 @@ in
         userEmail = "${gitEmail}";
     };
 
-    programs = [
+    programs = {
         home-manager.enable = true;
-        go.enable = true;
-        gcc.enable = true;
-        hyprland.enable = true;
         kitty = {
             enable = true;
             package = pkgs.kitty;
@@ -42,5 +40,5 @@ in
             enable = true;
             enableCompletion = true;
         };
-    ]
+    };
 }
