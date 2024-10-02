@@ -45,6 +45,7 @@ with lib;
     }
     
     bind = ${modifier},Return,exec,${terminal}
+    bind = ${modifier}SHIFT,Return,exec,rofi-launcher
     }
   ''
       ];

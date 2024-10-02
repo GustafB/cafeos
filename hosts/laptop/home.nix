@@ -12,6 +12,10 @@ in
         ../../config/neovim.nix
     ];
 
+    home.packages = [
+      (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
+    ];
+
     programs.git = {
         enable = true;
         userName = "${gitUsername}";
