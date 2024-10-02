@@ -4,18 +4,13 @@
   imports =
     [ 
       ./hardware-configuration.nix
+      ./users.nix
     ];
 
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
   networking.hostName = host; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -38,14 +33,6 @@
     LC_TIME = "sv_SE.UTF-8";
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.cafebabe = {
-    isNormalUser = true;
-    description = "Gustaf Brostedt";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
-  };
-
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -59,6 +46,7 @@
     wget
     google-chrome
     curl
+    jq
     kitty
     git
     htop
@@ -83,6 +71,12 @@
     git-crypt
   ];
 
+# grapics
+programs.hyprland = {
+  enable = true;
+  package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+};
+
 xdg.portal = {
   enable = true;
   wlr.enable = true;
@@ -95,12 +89,6 @@ xdg.portal = {
     pkgs.xdg-desktop-portal-hyprland
     pkgs.xdg-desktop-portal
   ];
-};
-
-# grapics
-programs.hyprland = {
-  enable = true;
-  package = inputs.hyprland.packages."${pkgs.system}".hyprland;
 };
 
 hardware.graphics = {
