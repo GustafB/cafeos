@@ -75,7 +75,7 @@
     unrar
     unzip
     greetd.tuigreet
-
+    libsecret
     hyprlock
     swww
     waybar
