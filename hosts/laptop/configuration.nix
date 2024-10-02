@@ -80,6 +80,7 @@
     swww
     waybar
     rofi
+    git-crypt
   ];
 
 xdg.portal = {
