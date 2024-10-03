@@ -1,7 +1,19 @@
 {
   lib,
+  username,
+  host,
+  config,
   ...
 }:
+
+let
+  inherit (import ../hosts/${host}/variables.nix)
+  browser
+  terminal
+  monitorSettings
+  keyboardLayout
+  ;
+in
 
 with lib;
 {
@@ -15,7 +27,6 @@ with lib;
     extraConfig =
       let
         modifier = "ALT";
-        terminal = "kitty";
       in
       concatStrings [
   ''
@@ -24,17 +35,21 @@ with lib;
     env = XDG_CURRENT_DESKTOP, Hyprland
     env = XDG_SESSION_DESKTOP, Hyprland
     env = XDG_SESSION_TYPE, wayland
-    env = GDK_BACKEND, wayland, x11
+    env = GDK_BACKEND, wayland
     env = CLUTTER_BACKEND, wayland
     env = QT_QPA_PLATFORM=wayland;xcb
     env = QT_WAYLAND_DISABLE_WINDOWDECORATION, 1
     env = QT_AUTO_SCREEN_SCALE_FACTOR, 1
+    env = MOZ_ENABLE_WAYLAND, 1
+    env = SDL_VIDEODRIVER, wayland
     exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     exec-once = killall -q swww;sleep .5 && swww init
     exec-once = killall -q waybar;sleep .5 && waybar 
+    exec-once = lxqt-policykit-agent
     monitor=,preferred,auto,1
-      
+    ${monitorSettings} 
     input {
+      kb_layout = ${keyboardLayout}
       kb_options = grp:alt_shift_toggle
       kb_options = ctrl:nocaps
       follow_mouse = 1
