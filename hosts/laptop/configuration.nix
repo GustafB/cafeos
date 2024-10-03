@@ -41,7 +41,8 @@
   environment.systemPackages = with pkgs; [
     vim 
     wget
-    google-chrome
+    # google-chrome
+    killall
     curl
     jq
     kitty
@@ -67,88 +68,89 @@
     rofi
     git-crypt
     starship
+    lxqt.lxqt-policykit
   ];
 
-programs = {
-  starship = {
-    enable = true;
-    settings = {
-      add_newline = false;
-    };
-  };
-  gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-};
-
-# grapics
-programs.hyprland = {
-  enable = true;
-  package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-};
-
-xdg.portal = {
-  enable = true;
-  wlr.enable = true;
-  extraPortals = [
-    pkgs.xdg-desktop-portal-gtk
-    pkgs.xdg-desktop-portal
-  ];
-  configPackages = [
-    pkgs.xdg-desktop-portal-gtk
-    pkgs.xdg-desktop-portal-hyprland
-    pkgs.xdg-desktop-portal
-  ];
-};
-
-hardware.graphics = {
-  enable = true;
-  enable32Bit = false;
-};
-
-services = {
-  xserver = {
-    enable = false;
-    videoDrivers = ["nvidia"];
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-  };
-  greetd = {
-    enable = true;
-    vt = 3;
-    settings = {
-      default_session = {
-        user = username;
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
+  programs = {
+    starship = {
+      enable = true;
+      settings = {
+        add_newline = false;
       };
     };
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
   };
-  openssh.enable = true;
-  libinput.enable = true;
-};
 
-security.pam.services.hyprlock = {};
-
-
-hardware.nvidia = {
-  modesetting.enable = true;
-  powerManagement.enable = false;
-  powerManagement.finegrained = false;
-  open = false;
-  nvidiaSettings = true;
-  package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-  prime = {
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
+  # grapics
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
-};
 
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal
+    ];
+    configPackages = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-hyprland
+      pkgs.xdg-desktop-portal
+    ];
+  };
 
-  # Some programs need SUID wrappers, can be configured further or are
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = false;
+  };
+  
+  services = {
+    xserver = {
+      enable = false;
+      videoDrivers = ["nvidia"];
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+    };
+    greetd = {
+      enable = true;
+      vt = 3;
+      settings = {
+        default_session = {
+          user = username;
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
+        };
+      };
+    };
+    openssh.enable = true;
+    libinput.enable = true;
+  };
+  
+  security.pam.services.hyprlock = {};
+  
+  
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  
+    prime = {
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+  
+  
+    # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {

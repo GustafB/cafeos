@@ -6,6 +6,7 @@ in
     home.username = username;
     home.homeDirectory = "/home/${username}";
     home.stateVersion = "24.05";
+    fonts.fontconfig.enable = true;
 
     imports = [
         ../../config/hyprland.nix
@@ -14,6 +15,7 @@ in
 
     home.packages = [
       (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
+      (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     ];
 
     programs.git = {
