@@ -93,11 +93,12 @@ xdg.portal = {
 
 hardware.graphics = {
   enable = true;
+  enable32Bit = false;
 };
 
 services = {
   xserver = {
-    enable = true;
+    enable = false;
     videoDrivers = ["nvidia"];
     xkb = {
       layout = "us";
