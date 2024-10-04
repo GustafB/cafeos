@@ -11,6 +11,7 @@ in
     imports = [
         ../../config/hyprland.nix
         ../../config/neovim.nix
+        ../../config/rofi.nix
     ];
 
     home.packages = [

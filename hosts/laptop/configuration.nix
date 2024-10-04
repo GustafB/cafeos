@@ -68,6 +68,20 @@
     _1password
     _1password-gui
   ];
+
+  fonts = {
+    packages = with pkgs; [
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    ];
+     fontconfig = {
+       defaultFonts = {
+         monospace = [ "JetBrainsMono Nerd Font Mono" ];
+	 serif = [ "Montserrat" ];
+	 sansSerif = [ "Montserrat" ];
+       };
+    };
+  };
+
 	
   
   programs = {
