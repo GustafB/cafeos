@@ -45,8 +45,11 @@
     git
     htop
     killall
+    fastfetch
     eza
     fzf
+    tree
+    fd
     bat
     brave
     libvirt
