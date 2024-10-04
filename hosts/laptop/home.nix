@@ -18,29 +18,7 @@ in
       (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     ];
 
-    programs.git = {
-        enable = true;
-        userName = "${gitUsername}";
-        userEmail = "${gitEmail}";
-	extraConfig = {
-	  gpg = {
-	    format = "ssh";
-	  };
-          "gpg \"ssh\"" = {
-            program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
-          };
-          commit = {
-            gpgsign = true;
-          };
-          user = {
-            signingKey = builtins.readFile ../../secrets/github.pub;
-          };
-	  credential.helper = "${
-	    pkgs.git.override { withLibsecret = true; }
-	  }/bin/git-credential-libsecret";
-	};
-	
-    };
+    programs.git = import ../../config/git.nix { inherit pkgs lib gitUsername gitEmail; };
 
     programs = {
         home-manager.enable = true;
