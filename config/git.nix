@@ -18,4 +18,15 @@
       signingKey = builtins.readFile ../secrets/github.pub;
     };
   };
+  aliases = {
+    un = "reset HEAD~1 --mixed";
+    am = "commit -a --amend";
+    cm = "commit -m";
+    s = "status";
+    ds = "diff --staged";
+    all = "add .";
+    au = "add -u";
+    one = "log --oneline";
+    p = "!git push origin $(git rev-parse --abbrev-ref HEAD)";
+  };
 }
