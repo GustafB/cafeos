@@ -1,4 +1,4 @@
-{ config, pkgs, host, username, options, lib, inputs, ... }:
+{ config, pkgs, host, username, options, lib, inputs, modulesPath, ... }:
 
 {
   imports =
@@ -41,7 +41,6 @@
   environment.systemPackages = with pkgs; [
     vim 
     wget
-    # google-chrome
     killall
     curl
     jq
@@ -69,8 +68,11 @@
     git-crypt
     starship
     lxqt.lxqt-policykit
+    _1password
+    _1password-gui
   ];
-
+	
+  
   programs = {
     starship = {
       enable = true;
@@ -78,17 +80,19 @@
         add_newline = false;
       };
     };
-    gnupg.agent = {
+    _1password.enable = true;
+    _1password-gui = {
       enable = true;
-      enableSSHSupport = true;
+      polkitPolicyOwners = [ "{$username}" ];
     };
   };
 
-  # grapics
+    # grapics
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
+
 
   xdg.portal = {
     enable = true;
@@ -128,8 +132,22 @@
         };
       };
     };
-    openssh.enable = true;
+    openssh = {
+       enable = true;
+       startWhenNeeded = true;
+       settings = {
+         AllowAgentForwarding = true;
+       };
+     };
     libinput.enable = true;
+  };
+
+  programs.ssh = {
+    startAgent = true;
+    extraConfig = ''
+    Host *
+        IdentityAgent ~/.1password/agent.sock
+    '';
   };
   
   security.pam.services.hyprlock = {};

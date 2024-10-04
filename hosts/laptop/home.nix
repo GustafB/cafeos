@@ -1,4 +1,4 @@
-{ pkgs, username, host, ... }:
+{ pkgs, username, host, lib, ... }:
 let
   inherit (import ./variables.nix) gitUsername gitEmail;
 in
@@ -23,10 +23,23 @@ in
         userName = "${gitUsername}";
         userEmail = "${gitEmail}";
 	extraConfig = {
+	  gpg = {
+	    format = "ssh";
+	  };
+          "gpg \"ssh\"" = {
+            program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+          };
+          commit = {
+            gpgsign = true;
+          };
+          user = {
+            signingKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3xxvzZ8cI5XqBhPKtjIxr1MTbELxngSnDd7+V01v50M6DBRjd5xfVv5m/Ev5dVPhynrq4nnc2BrlXTbn3K03/oQEPvzn5Hzhn3TSHmQfkhsiIIjP7DrhWMPR3Yi/Oo+mRhJfzfNL5W8a3eGJ0ESWPHvNwpNoPRnWK1WhoE10KnX7wxWaJGPi2eZIyoChEnKGGKkR9RYaOvcaKH6Wv4iZ0trOsGHg242fom0ZCl18iB3ILaaVekZ3bsapzgtiZ8cBUru8NMS3w7grz9i86g9VXcDXxjK8QbBvyAdjAtyPoXj4K2dNeoe7ayEfG6k9PWgNYrbge+Dc6V00seLmGRGfNU0Gg2Ik5qKuIdBQXqiXQkVihtflj7hD5Hkkeb2xs/GJNBjQhe7rGnEndrOMc0h0ClEDetoh/p6mTIHwJLOcD8H+e8K52crg7KDNxLNlEf9Dd7Dag81KBu5cdLiy056OA3JvaKq3QsydYzaxOjG0PiKig1CA/w2MXxHVW3VcfY8QK3kLtmxoDNY9jKd2sZB39m4vkorDztai7iKBcCXRMFoPmdxg74OgA+vqMubVFcjUWyucNWCdSHroKVZ+mgQJIrQQu04U0fLXy+b6ExMzW1MFfREUvMf1vzNDavqRryhq17WEXKSpYrfdjah0HNA9zIHzyEpiPaTnOi5eL2AnAaw==";
+          };
 	  credential.helper = "${
 	    pkgs.git.override { withLibsecret = true; }
 	  }/bin/git-credential-libsecret";
 	};
+	
     };
 
     programs = {

@@ -21,19 +21,19 @@
     nixosConfigurations = {
         "${host}" = nixpkgs.lib.nixosSystem {
 	    specialArgs = {
-	    inherit system;
-	    inherit inputs;
-	    inherit username;
-	    inherit host;
+	      inherit system;
+       	      inherit inputs;
+	      inherit username;
+	      inherit host;
 	    };
             modules = [
                 ./hosts/${host}/configuration.nix
                 home-manager.nixosModules.home-manager
                 {
                     home-manager.extraSpecialArgs = {
-                        inherit username;
-                        inherit inputs;
-                        inherit host;
+                      inherit username;
+                      inherit inputs;
+                      inherit host;
                     };
                     home-manager.useGlobalPkgs = true;
                     home-manager.useUserPackages = true;
