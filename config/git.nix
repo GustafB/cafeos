@@ -1,4 +1,4 @@
-{ pkgs, lib, gitUsername, gitEmail }:
+{ pkgs, lib, gitUsername, gitEmail, gitPublicKey, ... }:
 
 {
   enable = true;
@@ -15,7 +15,7 @@
       gpgsign = true;
     };
     user = {
-      signingKey = builtins.readFile ../secrets/github.pub;
+      signingKey = gitPublicKey;
     };
   };
   aliases = {

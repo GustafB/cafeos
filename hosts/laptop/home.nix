@@ -1,6 +1,6 @@
 { pkgs, username, host, lib, ... }:
 let
-  inherit (import ./variables.nix) gitUsername gitEmail;
+  inherit (import ./variables.nix) gitUsername gitEmail gitPublicKey;
 in
 {
     home.username = username;
@@ -19,7 +19,7 @@ in
       (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
     ];
 
-    programs.git = import ../../config/git.nix { inherit pkgs lib gitUsername gitEmail; };
+    programs.git = import ../../config/git.nix { inherit pkgs lib gitUsername gitEmail gitPublicKey; };
 
     programs = {
       home-manager.enable = true;
