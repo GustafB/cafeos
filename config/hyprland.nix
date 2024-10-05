@@ -19,7 +19,9 @@ with lib;
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
+    xwayland = {
+      enable = true;
+    };
     systemd = {
       enable = true;
       variables = ["--all"];
@@ -48,6 +50,9 @@ with lib;
     exec-once = lxqt-policykit-agent
     monitor=,preferred,auto,1
     ${monitorSettings} 
+    xwayland {
+      force_zero_scaling = true
+    }
     input {
       kb_layout = ${keyboardLayout}
       kb_options = grp:alt_shift_toggle
