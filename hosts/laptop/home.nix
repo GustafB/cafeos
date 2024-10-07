@@ -81,13 +81,14 @@ in
 	    v = "nvim";
 	    cat = "bat";
 	    ls = "eza --icons";
-            ll = "eza -lh --icons --grid --group-directories-first";
-            la = "eza -lah --icons --grid --group-directories-first";
-            ".." = "cd ..";
-            "..2" = "cd ../..";
-            "..3" = "cd ../../..";
-            "..4" = "cd ../../../..";
-	    rebuild = "sudo nixos-rebuild switch --flake ~/cafeos/#laptop";
+        ll = "eza -lh --icons --grid --group-directories-first";
+        la = "eza -lah --icons --grid --group-directories-first";
+        ".." = "cd ..";
+        "..2" = "cd ../..";
+        "..3" = "cd ../../..";
+        "..4" = "cd ../../../..";
+        "wifi" = "nmtui";
+        rebuild = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
 	  };
     };
     fzf = {
