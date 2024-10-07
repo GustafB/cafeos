@@ -22,7 +22,7 @@
         "${host}" = nixpkgs.lib.nixosSystem {
 	    specialArgs = {
 	      inherit system;
-       	      inherit inputs;
+          inherit inputs;
 	      inherit username;
 	      inherit host;
 	    };
