@@ -89,6 +89,7 @@ in
         "..4" = "cd ../../../..";
         "wifi" = "nmtui";
         rebuild = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
+        poweroff = "sudo shutdown -h now";
 	  };
     };
     fzf = {
