@@ -13,7 +13,7 @@
 
   let
     system = "aarch64-linux";
-    host = "laptop";
+    host = "desktop";
     username = "cafebabe";
   in
 
