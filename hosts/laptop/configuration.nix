@@ -204,7 +204,6 @@
   services = {
     xserver = {
       enable = false;
-      videoDrivers = ["nvidia"];
       xkb = {
         layout = "us";
         variant = "";

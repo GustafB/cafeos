@@ -16,30 +16,8 @@ in
 
     home.packages = with pkgs; [
       (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
+      (import ../../modules/python311.nix { inherit pkgs lib config; })
       (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" "DroidSansMono" ]; })
-        (python311.withPackages (
-                ps:
-                    with ps; [
-                    setuptools
-                    jupyter
-                    jupyterlab
-                    ipython
-                    ipykernel
-                    # DS
-                    matplotlib
-                    numpy
-                    plotly
-                    # scikit-learn-extra
-                    scipy
-                    seaborn
-                    pandas
-                    # formatter
-                    black
-                    ruff
-                    # other
-                    virtualenv
-                    ])
-            )
     ];
 
     programs.git = import ../../config/git.nix { inherit pkgs lib gitUsername gitEmail gitPublicKey; };

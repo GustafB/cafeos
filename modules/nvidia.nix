@@ -10,7 +10,7 @@ let
 in 
 {
     options.drivers.nvidia = {
-        enable = mkEnableOption = "Enable Nvidia Drivers";
+        enable = mkEnableOption "Enable Nvidia Drivers";
     };
 
     config = mkIf cfg.enable {
