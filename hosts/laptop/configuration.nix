@@ -1,10 +1,10 @@
-{ config, pkgs, host, username, options, lib, inputs, modulesPath, ... }:
 
 {
   imports =
     [ 
       ./hardware.nix
       ./users.nix
+      ../../modules/nvidia.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -29,6 +29,9 @@
     LC_TELEPHONE = "sv_SE.UTF-8";
     LC_TIME = "sv_SE.UTF-8";
   };
+
+  # enable nvidia drivers
+  drivers.nvidia.enable = true;
 
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -237,12 +240,5 @@
   
   security.pam.services.hyprlock = {};
   
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
   system.stateVersion = "24.05"; 
 }

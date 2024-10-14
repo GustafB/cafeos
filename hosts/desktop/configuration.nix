@@ -5,6 +5,7 @@
     [ 
       ./hardware.nix
       ./users.nix
+      ../../modules/nvidia.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -30,6 +31,8 @@
     LC_TIME = "sv_SE.UTF-8";
   };
 
+  # enable nvidia drivers
+  drivers.nvidia.enable = true;
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -70,6 +73,7 @@
     lxqt.lxqt-policykit
     _1password
     _1password-gui
+    lazygit
   ];
 
   fonts = {
@@ -170,6 +174,12 @@
         thunar-volman
       ];
     };
+    pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+    };
   };
 
     # grapics
@@ -223,7 +233,7 @@
        settings = {
          AllowAgentForwarding = true;
        };
-     };
+    };
     libinput.enable = true;
   };
 
@@ -237,12 +247,6 @@
   
   security.pam.services.hyprlock = {};
   
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
 
   system.stateVersion = "24.05"; 
 }
