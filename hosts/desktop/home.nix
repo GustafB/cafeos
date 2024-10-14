@@ -12,6 +12,7 @@ in
         ../../config/hyprland.nix
         ../../config/neovim.nix
         ../../config/rofi.nix
+        ../../config/waybar.nix
     ];
 
     home.packages = with pkgs; [
