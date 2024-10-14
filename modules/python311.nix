@@ -12,13 +12,15 @@ pkgs.python311.withPackages (ps: with ps; [
   matplotlib
   numpy
   plotly
-  #scikit-learn-extra
+  scikit-learn
   scipy
   seaborn
   pandas
+  networkx
   # formatter
   black
   # other
   virtualenv
+  requests
 ])
 
