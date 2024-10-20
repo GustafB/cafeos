@@ -50,9 +50,65 @@ with lib;
     exec-once = lxqt-policykit-agent
     monitor=,preferred,auto,1
     ${monitorSettings} 
+
+
+    general {
+        gaps_in = 5
+        gaps_out = 20
+        border_size = 2
+        col.active_border = rgb(f5e0dc)
+        col.inactive_border = rgb(000000)
+        resize_on_border = true
+        layout = dwindle
+    }
+
+    decoration {
+        rounding = 15
+
+        blur {
+            enabled = true
+            size = 12
+            passes = 4
+            new_optimizations = true
+        }
+
+        drop_shadow = yes
+        shadow_range = 30
+        shadow_render_power = 4
+        col.shadow = rgb(000000)
+    }
+
+    animations {
+        enabled = yes
+        bezier = quart, 0.25, 1, 0.5, 1
+        animation = windows, 1, 6, quart, slide
+        animation = border, 1, 6, quart
+        animation = fade, 1, 6, quart
+        animation = workspaces, 1, 6, quart
+    }
+
+    dwindle {
+        pseudotile = yes
+        preserve_split = yes
+    }
+
+    misc {
+        disable_hyprland_logo = true
+    }
+
+    render {
+            explicit_sync = true
+    }
+
+    windowrule = float,^(pavucontrol)$
+    windowrule = pin,^(pavucontrol)$
+    windowrule = size 900 500,^(pavucontrol)$
+
     xwayland {
       force_zero_scaling = true
     }
+
+
     input {
       kb_layout = ${keyboardLayout}
       kb_options = grp:alt_shift_toggle
