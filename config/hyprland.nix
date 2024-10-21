@@ -97,7 +97,7 @@ with lib;
     }
 
     render {
-            explicit_sync = true
+        explicit_sync = true
     }
 
     windowrule = float,^(pavucontrol)$

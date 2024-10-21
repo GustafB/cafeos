@@ -17,16 +17,17 @@ with lib;
         {
             layer = "top";
             modules-left = [ 
-                "cpu" 
-                "memory"
-                "disk"
-                "pulseaudio"
+                "hyprland/workspaces"
             ];
             modules-center = [
                 "hyprland/window" 
             ];
             modules-right = [
                 "tray"
+                "cpu" 
+                "memory"
+                "disk"
+                "pulseaudio"
                 "clock"
             ];
 

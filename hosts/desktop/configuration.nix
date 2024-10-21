@@ -230,8 +230,11 @@
     libinput.enable = true;
     pipewire = {
         enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
+        audio.enable = true; # enables pavucontrol
+        alsa = {
+            enable = true;
+            support32Bit = true;
+        };
         pulse.enable = true;
     };
 
