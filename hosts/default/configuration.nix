@@ -1,16 +1,25 @@
-{ config, pkgs, host, username, options, lib, inputs, modulesPath, ... }:
+{
+  config,
+  pkgs,
+  host,
+  username,
+  options,
+  lib,
+  inputs,
+  modulesPath,
+  ...
+}:
 
 {
-  imports =
-    [ 
-      ./hardware.nix
-      ./users.nix
-    ];
+  imports = [
+    ./hardware.nix
+    ./users.nix
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  
-  networking.hostName = host; 
+
+  networking.hostName = host;
 
   networking.networkmanager.enable = true;
 
@@ -30,13 +39,15 @@
     LC_TIME = "sv_SE.UTF-8";
   };
 
-
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim 
+    vim
     wget
     killall
     curl
@@ -76,26 +87,24 @@
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     ];
-     fontconfig = {
-       defaultFonts = {
-         monospace = [ "JetBrainsMono Nerd Font Mono" ];
-	 serif = [ "Montserrat" ];
-	 sansSerif = [ "Montserrat" ];
-       };
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font Mono" ];
+        serif = [ "Montserrat" ];
+        sansSerif = [ "Montserrat" ];
+      };
     };
   };
 
-	
-  
   programs = {
     _1password.enable = true;
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "{$username}" ];
     };
-	starship = {
-	  enable = true;
-	  package = pkgs.starship;
+    starship = {
+      enable = true;
+      package = pkgs.starship;
       settings = {
         add_newline = false;
         buf = {
@@ -162,7 +171,7 @@
           symbol = " ";
         };
       };
-	};
+    };
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -172,12 +181,11 @@
     };
   };
 
-    # grapics
+  # grapics
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
-
 
   xdg.portal = {
     enable = true;
@@ -197,11 +205,11 @@
     enable = true;
     enable32Bit = false;
   };
-  
+
   services = {
     xserver = {
       enable = false;
-      videoDrivers = ["nvidia"];
+      videoDrivers = [ "nvidia" ];
       xkb = {
         layout = "us";
         variant = "";
@@ -218,25 +226,25 @@
       };
     };
     openssh = {
-       enable = true;
-       startWhenNeeded = true;
-       settings = {
-         AllowAgentForwarding = true;
-       };
-     };
+      enable = true;
+      startWhenNeeded = true;
+      settings = {
+        AllowAgentForwarding = true;
+      };
+    };
     libinput.enable = true;
   };
 
   programs.ssh = {
     startAgent = true;
     extraConfig = ''
-    Host *
-        IdentityAgent ~/.1password/agent.sock
+      Host *
+          IdentityAgent ~/.1password/agent.sock
     '';
   };
-  
-  security.pam.services.hyprlock = {};
-  
+
+  security.pam.services.hyprlock = { };
+
   hardware.nvidia = {
     modesetting.enable = true;
     open = false;
@@ -244,5 +252,5 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
-  system.stateVersion = "24.05"; 
+  system.stateVersion = "24.05";
 }

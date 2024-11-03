@@ -1,17 +1,26 @@
-{ config, pkgs, host, username, options, lib, inputs, modulesPath, ... }:
+{
+  config,
+  pkgs,
+  host,
+  username,
+  options,
+  lib,
+  inputs,
+  modulesPath,
+  ...
+}:
 
 {
-  imports =
-    [ 
-      ./hardware.nix
-      ./users.nix
-      ../../modules/nvidia.nix
-    ];
+  imports = [
+    ./hardware.nix
+    ./users.nix
+    ../../modules/nvidia.nix
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  
-  networking.hostName = host; 
+
+  networking.hostName = host;
 
   networking.networkmanager.enable = true;
 
@@ -34,12 +43,15 @@
   # enable nvidia drivers
   drivers.nvidia.enable = true;
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim 
+    vim
     wget
     killall
     curl
@@ -64,7 +76,6 @@
     unzip
     greetd.tuigreet
     libsecret
-    hyprlock
     swww
     waybar
     rofi
@@ -74,32 +85,31 @@
     _1password
     _1password-gui
     lazygit
+    clang_14
   ];
 
   fonts = {
     packages = with pkgs; [
       (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     ];
-     fontconfig = {
-       defaultFonts = {
-         monospace = [ "JetBrainsMono Nerd Font Mono" ];
-	 serif = [ "Montserrat" ];
-	 sansSerif = [ "Montserrat" ];
-       };
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font Mono" ];
+        serif = [ "Montserrat" ];
+        sansSerif = [ "Montserrat" ];
+      };
     };
   };
 
-	
-  
   programs = {
     _1password.enable = true;
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "{$username}" ];
     };
-	starship = {
-	  enable = true;
-	  package = pkgs.starship;
+    starship = {
+      enable = true;
+      package = pkgs.starship;
       settings = {
         add_newline = false;
         buf = {
@@ -166,7 +176,7 @@
           symbol = " ";
         };
       };
-	};
+    };
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -176,12 +186,11 @@
     };
   };
 
-    # grapics
+  # grapics
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
-
 
   xdg.portal = {
     enable = true;
@@ -201,7 +210,7 @@
     enable = true;
     enable32Bit = false;
   };
-  
+
   services = {
     xserver = {
       enable = false;
@@ -214,6 +223,10 @@
       enable = true;
       vt = 3;
       settings = {
+        initial_session = {
+          user = username;
+          command = "Hyprland";
+        };
         default_session = {
           user = username;
           command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
@@ -221,21 +234,21 @@
       };
     };
     openssh = {
-       enable = true;
-       startWhenNeeded = true;
-       settings = {
-         AllowAgentForwarding = true;
-       };
+      enable = true;
+      startWhenNeeded = true;
+      settings = {
+        AllowAgentForwarding = true;
+      };
     };
     libinput.enable = true;
     pipewire = {
+      enable = true;
+      audio.enable = true; # enables pavucontrol
+      alsa = {
         enable = true;
-        audio.enable = true; # enables pavucontrol
-        alsa = {
-            enable = true;
-            support32Bit = true;
-        };
-        pulse.enable = true;
+        support32Bit = true;
+      };
+      pulse.enable = true;
     };
 
   };
@@ -243,31 +256,31 @@
   programs.ssh = {
     startAgent = true;
     extraConfig = ''
-    Host *
-    IdentityAgent ~/.1password/agent.sock
+      Host *
+      IdentityAgent ~/.1password/agent.sock
     '';
   };
 
-  security =  {
-    pam.services.hyprlock = {};
+  security = {
+    pam.services.hyprlock = { };
     rtkit.enable = true;
     polkit = {
       enable = true;
       extraConfig = ''
-      polkit.addRule(function(action, subject) {
-            if (
-                subject.isInGroup("users")
-                && (
-                  action.id == "org.freedesktop.login1.reboot" ||
-                  action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
-                  action.id == "org.freedesktop.login1.power-off" ||
-                  action.id == "org.freedesktop.login1.power-off-multiple-sessions"
-                )
-            )
-            {
-              return polkit.Result.YES;
-            }
-        })
+        polkit.addRule(function(action, subject) {
+              if (
+                  subject.isInGroup("users")
+                  && (
+                    action.id == "org.freedesktop.login1.reboot" ||
+                    action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
+                    action.id == "org.freedesktop.login1.power-off" ||
+                    action.id == "org.freedesktop.login1.power-off-multiple-sessions"
+                  )
+              )
+              {
+                return polkit.Result.YES;
+              }
+          })
       '';
     };
   };
@@ -276,7 +289,6 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
- 
-  
-  system.stateVersion = "24.05"; 
+
+  system.stateVersion = "24.05";
 }
