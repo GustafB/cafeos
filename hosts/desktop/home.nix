@@ -8,7 +8,6 @@
 }:
 let
   inherit (import ./variables.nix) gitUsername gitEmail gitPublicKey;
-  assets = "/home/${username}/cafeos/config/assets";
 in
 {
   home.username = username;
@@ -17,7 +16,7 @@ in
   fonts.fontconfig.enable = true;
 
   imports = [
-    ../../config/hyprland.nix
+    ../../home/modules/hyprland
     ../../config/neovim.nix
     ../../config/rofi.nix
     ../../config/waybar.nix
@@ -34,43 +33,6 @@ in
       ];
     })
   ];
-
-  services = {
-    hypridle = {
-      settings = {
-        general = {
-          after_sleep_cmd = "hyprctl dispatch dpms on";
-          ignore_dbus_inhibit = false;
-          lock_cmd = "hyprlock";
-        };
-        listener = [
-          {
-            timeout = 900;
-            on-timeout = "hyprlock";
-          }
-          {
-            timeout = 1200;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
-          }
-        ];
-      };
-    };
-    hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "off";
-        splash = "false";
-        preload = [
-          "${assets}/wallpapers/wallpaper.jpg"
-        ];
-        wallpaper = [
-          "DP-3,${assets}/wallpapers/wallpaper.jpg"
-          "DP-4,${assets}/wallpapers/wallpaper.jpg"
-        ];
-      };
-    };
-  };
 
   programs.git = import ../../config/git.nix {
     inherit
@@ -135,58 +97,6 @@ in
     starship = {
       enable = true;
       package = pkgs.starship;
-    };
-    hyprlock = {
-      enable = true;
-      settings = {
-        general = {
-          disable_loading_bar = true;
-          grace = 10;
-          hide_cursor = true;
-          no_fade_in = false;
-        };
-        background = [
-          {
-            monitor = "DP-3";
-            path = "/tmp/screenlock_0.png";
-            blur_passes = 3;
-            blur_size = 8;
-          }
-          {
-            monitor = "DP-4";
-            path = "/tmp/screenlock_1.png";
-            blur_passes = 3;
-            blur_size = 8;
-          }
-        ];
-        image = [
-          {
-            path = "${assets}/images/face.jpg";
-            size = 150;
-            border_size = 4;
-            border_color = "rgb(0C96F9)";
-            rounding = -1;
-            position = "0, 200";
-            halign = "center";
-            valign = "center";
-          }
-        ];
-        input-field = [
-          {
-            size = "200, 50";
-            position = "0, -80";
-            monitor = "";
-            dots_center = true;
-            fade_on_empty = false;
-            font_color = "rgb(CFE6F4)";
-            inner_color = "rgb(657DC2)";
-            outer_color = "rgb(0D0E15)";
-            outline_thickness = 5;
-            placeholder_text = "'<span foreground=\"##cad3f5\">Password...</span>'";
-            shadow_passes = 2;
-          }
-        ];
-      };
     };
   };
 }

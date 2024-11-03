@@ -14,6 +14,7 @@
   imports = [
     ./hardware.nix
     ./users.nix
+    ../../modules/programs/hyprland.nix
     ../../modules/nvidia.nix
   ];
 
@@ -188,11 +189,6 @@
   };
 
   # grapics
-  programs.hyprland = {
-    enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  };
-
   xdg.portal = {
     enable = true;
     wlr.enable = true;
