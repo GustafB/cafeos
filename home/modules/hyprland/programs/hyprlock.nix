@@ -52,7 +52,7 @@
           inner_color = "rgb(657DC2)";
           outer_color = "rgb(0D0E15)";
           outline_thickness = 2;
-          placeholder_text = "'<span foreground=\"##cad3f5\">Password...</span>'";
+          placeholder_text = "";
           shadow_passes = 2;
         }
       ];

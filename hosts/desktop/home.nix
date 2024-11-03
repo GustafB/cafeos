@@ -17,6 +17,7 @@ in
 
   imports = [
     ../../home/modules/hyprland
+    ../../home/modules/go.nix
     ../../config/neovim.nix
     ../../config/rofi.nix
     ../../config/waybar.nix
