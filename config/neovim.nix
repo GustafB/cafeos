@@ -1,5 +1,4 @@
-{ pkgs, inputs, ... }:
-{
+{ pkgs, inputs, ... }: {
   programs = {
     neovim = {
       enable = true;
@@ -11,11 +10,10 @@
       extraPackages = with pkgs; [
         nodePackages.npm
         nodePackages.neovim
-        
+
         # for telescope
         fd
         ripgrep
-
 
         # golang
         gopls
@@ -24,7 +22,9 @@
         golangci-lint
 
         # nix
+        nil
         statix
+        nixfmt-rfc-style
         nixpkgs-fmt
 
         # lua
@@ -42,14 +42,8 @@
         shellharden
 
         # python
-        (python311.withPackages (ps: with ps; [
-          setuptools
-          black
-          isort
-          debugpy
-          ruff
-          pyright
-        ]))
+        (python311.withPackages
+          (ps: with ps; [ setuptools black isort debugpy ruff pyright ]))
 
         # additional
         marksman
@@ -57,6 +51,7 @@
         wl-clipboard
         codespell
         gitlint
+        lazygit
       ];
     };
   };
