@@ -128,6 +128,7 @@ with lib;
             bind = ${modifier}SHIFT,C,exit,
             bind = ${modifier}SHIFT,F,togglefloating,
             bind = ${modifier}SHIFT,I,togglesplit,
+            bind = ${modifier}CTRL,l,exec,screenlock
 
             # workspace movement
             bind = ${modifier}SHIFT,left,movewindow,l

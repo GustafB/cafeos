@@ -86,6 +86,7 @@
     _1password-gui
     lazygit
     clang_14
+    grim
   ];
 
   fonts = {

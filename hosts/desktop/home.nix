@@ -8,6 +8,7 @@
 }:
 let
   inherit (import ./variables.nix) gitUsername gitEmail gitPublicKey;
+  assets = "/home/${username}/cafeos/config/assets";
 in
 {
   home.username = username;
@@ -24,6 +25,7 @@ in
 
   home.packages = with pkgs; [
     (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
+    (import ../../scripts/screenlock.nix { inherit pkgs; })
     (import ../../modules/python311.nix { inherit pkgs lib config; })
     (pkgs.nerdfonts.override {
       fonts = [
@@ -51,6 +53,20 @@ in
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }
+        ];
+      };
+    };
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "off";
+        splash = "false";
+        preload = [
+          "${assets}/wallpapers/wallpaper.jpg"
+        ];
+        wallpaper = [
+          "DP-3,${assets}/wallpapers/wallpaper.jpg"
+          "DP-4,${assets}/wallpapers/wallpaper.jpg"
         ];
       };
     };
@@ -131,14 +147,21 @@ in
         };
         background = [
           {
-            path = "/home/${username}/cafeos/config/assets/wallpapers/wallpaper.jpg";
+            monitor = "DP-3";
+            path = "/tmp/screenlock_0.png";
+            blur_passes = 3;
+            blur_size = 8;
+          }
+          {
+            monitor = "DP-4";
+            path = "/tmp/screenlock_1.png";
             blur_passes = 3;
             blur_size = 8;
           }
         ];
         image = [
           {
-            path = "/home/${username}/cafeos/config/assets/images/face.jpg";
+            path = "${assets}/images/face.jpg";
             size = 150;
             border_size = 4;
             border_color = "rgb(0C96F9)";
@@ -159,7 +182,7 @@ in
             inner_color = "rgb(657DC2)";
             outer_color = "rgb(0D0E15)";
             outline_thickness = 5;
-            placeholder_text = "password...";
+            placeholder_text = "'<span foreground=\"##cad3f5\">Password...</span>'";
             shadow_passes = 2;
           }
         ];
