@@ -17,7 +17,8 @@ in
 
   imports = [
     ../../home/modules/hyprland
-    ../../home/modules/go.nix
+    ../../home/modules/dev
+    ../../home/modules/programs
     ../../config/neovim.nix
     ../../config/rofi.nix
     ../../config/waybar.nix
@@ -26,7 +27,6 @@ in
   home.packages = with pkgs; [
     (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
     (import ../../scripts/screenlock.nix { inherit pkgs; })
-    (import ../../modules/python311.nix { inherit pkgs lib config; })
     (pkgs.nerdfonts.override {
       fonts = [
         "JetBrainsMono"
@@ -47,57 +47,5 @@ in
 
   programs = {
     home-manager.enable = true;
-    kitty = {
-      enable = true;
-      package = pkgs.kitty;
-      settings = {
-        scrollback_lines = 2000;
-        wheel_scroll_min_lines = 1;
-        window_padding_width = 4;
-        confirm_os_window_close = 0;
-      };
-      extraConfig = ''
-        tab_bar_style fade
-        tab_fade 1
-        active_tab_font_style   bold
-        inactive_tab_font_style bold
-        map alt+minus change_font_size all -1
-        map alt+equal change_font_size all +1
-      '';
-    };
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      # load personal config and enable emacs keybinds for cmdline
-      initExtra = ''
-        fastfetch
-        if [[ -f $HOME/.zshrc-personal ]]; then
-        source $HOME/.zshrc-personal
-        fi
-        bindkey -e
-        	  '';
-      shellAliases = {
-        sv = "sudo nvim";
-        v = "nvim";
-        cat = "bat";
-        ls = "eza --icons";
-        ll = "eza -lh --icons --grid --group-directories-first";
-        la = "eza -lah --icons --grid --group-directories-first";
-        ".." = "cd ..";
-        "..2" = "cd ../..";
-        "..3" = "cd ../../..";
-        "..4" = "cd ../../../..";
-        "wifi" = "nmtui";
-        rebuild = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
-        poweroff = "sudo shutdown -h now";
-      };
-    };
-    fzf = {
-      enable = true;
-    };
-    starship = {
-      enable = true;
-      package = pkgs.starship;
-    };
   };
 }

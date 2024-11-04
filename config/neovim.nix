@@ -1,4 +1,5 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, inputs, ... }:
+{
   programs = {
     neovim = {
       enable = true;
@@ -42,8 +43,17 @@
         shellharden
 
         # python
-        (python311.withPackages
-          (ps: with ps; [ setuptools black isort debugpy ruff pyright ]))
+        (python311.withPackages (
+          ps: with ps; [
+            setuptools
+            black
+            isort
+            debugpy
+            ruff
+            pyright
+            mypy
+          ]
+        ))
 
         # additional
         marksman
@@ -56,4 +66,3 @@
     };
   };
 }
-
