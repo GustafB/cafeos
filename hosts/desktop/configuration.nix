@@ -59,7 +59,7 @@
     jq
     kitty
     git
-    htop
+    btop
     killall
     fastfetch
     eza
