@@ -1,12 +1,7 @@
 {
-  config,
   pkgs,
   host,
   username,
-  options,
-  lib,
-  inputs,
-  modulesPath,
   ...
 }:
 
@@ -19,6 +14,7 @@
     ../../modules/hardware/bluetooth.nix
 
     ../../modules/programs
+
     (import ../../modules/services { inherit pkgs username; })
   ];
 
@@ -79,13 +75,7 @@
     libnotify
     unrar
     unzip
-    greetd.tuigreet
-    libsecret
-    git-crypt
     lxqt.lxqt-policykit
-    lazygit
-    clang_14
-    grim
   ];
 
   # fonts = {

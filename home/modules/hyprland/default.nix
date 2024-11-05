@@ -1,14 +1,12 @@
 {
   pkgs,
-  inputs,
   ...
 }:
 {
   imports = [
-    ./config/default.nix
-    ./programs/hyprlock.nix
-    ./services/hypridle.nix
-    ./services/hyprpaper.nix
+    ./config
+    ./programs
+    ./services
   ];
 
   home.packages = with pkgs; [
@@ -18,5 +16,6 @@
     wl-clipboard
     wl-screenrec
     wlr-randr
+    hyprpicker
   ];
 }
