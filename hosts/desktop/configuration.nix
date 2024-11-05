@@ -19,6 +19,7 @@
     ../../modules/hardware/bluetooth.nix
 
     ../../modules/programs
+    (import ../../modules/services { inherit pkgs username; })
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -82,8 +83,6 @@
     libsecret
     git-crypt
     lxqt.lxqt-policykit
-    _1password
-    _1password-gui
     lazygit
     clang_14
     grim
@@ -107,13 +106,6 @@
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "{$username}" ];
-    };
-    thunar = {
-      enable = true;
-      plugins = with pkgs.xfce; [
-        thunar-archive-plugin
-        thunar-volman
-      ];
     };
   };
 
@@ -145,38 +137,7 @@
         variant = "";
       };
     };
-    greetd = {
-      enable = true;
-      vt = 3;
-      settings = {
-        initial_session = {
-          user = username;
-          command = "Hyprland";
-        };
-        default_session = {
-          user = username;
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
-        };
-      };
-    };
-    openssh = {
-      enable = true;
-      startWhenNeeded = true;
-      settings = {
-        AllowAgentForwarding = true;
-      };
-    };
     libinput.enable = true;
-    pipewire = {
-      enable = true;
-      audio.enable = true; # enables pavucontrol
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-      pulse.enable = true;
-    };
-
   };
 
   programs.ssh = {

@@ -1,28 +1,27 @@
 {
-        lib,
-        pkgs,
-        config,
-        ...
+  lib,
+  pkgs,
+  config,
+  ...
 }:
 with lib;
 let
   cfg = config.drivers.nvidia;
-in 
+in
 {
-    options.drivers.nvidia = {
-        enable = mkEnableOption "Enable Nvidia Drivers";
-    };
+  options.drivers.nvidia = {
+    enable = mkEnableOption "Enable Nvidia Drivers";
+  };
 
-    config = mkIf cfg.enable {
-        services.xserver.videoDrivers = [ "nvidia" ];
-        hardware.nvidia = {
-            modesetting.enable = true;
-            powerManagement.enable = false;
-            powerManagement.finegrained = false;
-            open = false;
-            nvidiaSettings = true;
-            package = config.boot.kernelPackages.nvidiaPackages.stable;
-        };
+  config = mkIf cfg.enable {
+    services.xserver.videoDrivers = [ "nvidia" ];
+    hardware.nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
+      open = false;
+      nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
+  };
 }
-
