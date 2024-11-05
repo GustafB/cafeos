@@ -22,9 +22,8 @@
         host
         ;
     })
-    ../../modules/programs/neovim.nix
-    ../../modules/programs/rofi.nix
-    ../../modules/programs/waybar.nix
+    ../../home/modules/programs/rofi.nix
+    ../../home/modules/programs/waybar.nix
   ];
 
   home.packages = with pkgs; [

@@ -14,9 +14,11 @@
   imports = [
     ./hardware.nix
     ./users.nix
-    ../../modules/programs/hyprland.nix
-    ../../modules/nvidia.nix
-    ../../modules/programs/zsh.nix
+
+    ../../modules/hardware/nvidia.nix
+    ../../modules/hardware/bluetooth.nix
+
+    ../../modules/programs
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -78,11 +80,7 @@
     unzip
     greetd.tuigreet
     libsecret
-    swww
-    waybar
-    rofi
     git-crypt
-    starship
     lxqt.lxqt-policykit
     _1password
     _1password-gui
@@ -91,18 +89,18 @@
     grim
   ];
 
-  fonts = {
-    packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-    ];
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "JetBrainsMono Nerd Font Mono" ];
-        serif = [ "Montserrat" ];
-        sansSerif = [ "Montserrat" ];
-      };
-    };
-  };
+  # fonts = {
+  #   packages = with pkgs; [
+  #     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  #   ];
+  #   fontconfig = {
+  #     defaultFonts = {
+  #       monospace = [ "JetBrainsMono Nerd Font Mono" ];
+  #       serif = [ "Montserrat" ];
+  #       sansSerif = [ "Montserrat" ];
+  #     };
+  #   };
+  # };
 
   programs = {
     _1password.enable = true;
@@ -212,11 +210,6 @@
       '';
     };
   };
-
-  # enable bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
 
   system.stateVersion = "24.05";
 }
