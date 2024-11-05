@@ -101,14 +101,6 @@
   #   };
   # };
 
-  programs = {
-    _1password.enable = true;
-    _1password-gui = {
-      enable = true;
-      polkitPolicyOwners = [ "{$username}" ];
-    };
-  };
-
   # grapics
   xdg.portal = {
     enable = true;
@@ -138,14 +130,6 @@
       };
     };
     libinput.enable = true;
-  };
-
-  programs.ssh = {
-    startAgent = true;
-    extraConfig = ''
-      Host *
-      IdentityAgent ~/.1password/agent.sock
-    '';
   };
 
   security = {
