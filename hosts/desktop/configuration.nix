@@ -83,13 +83,6 @@
   # };
 
   services = {
-    # xserver = {
-    #   enable = false;
-    #   xkb = {
-    #     layout = "us";
-    #     variant = "";
-    #   };
-    # };
     libinput.enable = true;
   };
 

@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   username,
   host,
   lib,
@@ -22,8 +21,6 @@
         host
         ;
     })
-    ../../home/modules/programs/rofi.nix
-    ../../home/modules/programs/waybar.nix
   ];
 
   home.packages = with pkgs; [
