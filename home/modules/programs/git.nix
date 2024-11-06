@@ -8,11 +8,38 @@ let
   inherit (import ../../../hosts/${host}/variables.nix) gitUsername gitEmail gitPublicKey;
 in
 {
+
+  home.packages = with pkgs; [
+    lazygit
+    gitflow
+  ];
+
   programs.git = {
     enable = true;
+    package = pkgs.gitAndTools.gitFull;
+
     userName = gitUsername;
     userEmail = gitEmail;
+
+    delta = {
+      enable = true;
+      options.dark = true;
+    };
+
     extraConfig = {
+      push.default = "current";
+      merge.stat = "true";
+      core.whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol";
+      repack.usedeltabaseoffset = "true";
+      pull.ff = "only";
+      rebase = {
+        autoSquash = true;
+        autoStash = true;
+      };
+      rerere = {
+        enabled = true;
+        autoStash = true;
+      };
       gpg = {
         format = "ssh";
       };
