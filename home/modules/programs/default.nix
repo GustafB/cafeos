@@ -1,7 +1,4 @@
 {
-  lib,
-  pkgs,
-  host,
   ...
 }:
 {
@@ -13,6 +10,6 @@
     ./waybar.nix
     ./rofi.nix
     ./neovim.nix
-    (import ./git.nix { inherit lib pkgs host; })
+    ./git.nix
   ];
 }

@@ -1,8 +1,6 @@
 {
   pkgs,
   username,
-  host,
-  lib,
   ...
 }:
 {
@@ -14,13 +12,7 @@
   imports = [
     ../../home/modules/hyprland
     ../../home/modules/dev
-    (import ../../home/modules/programs {
-      inherit
-        lib
-        pkgs
-        host
-        ;
-    })
+    ../../home/modules/programs
   ];
 
   home.packages = with pkgs; [
