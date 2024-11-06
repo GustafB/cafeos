@@ -17,8 +17,6 @@
   ];
 
   home.packages = with pkgs; [
-    (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
-    (import ../../scripts/screenlock.nix { inherit pkgs; })
     (nerdfonts.override {
       fonts = [
         "JetBrainsMono"

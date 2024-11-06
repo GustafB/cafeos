@@ -7,6 +7,8 @@
     ./config
     ./programs
     ./services
+
+    ./scripts/screenlock.nix
   ];
 
   home.packages = with pkgs; [
