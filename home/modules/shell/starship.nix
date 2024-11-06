@@ -3,6 +3,7 @@
   programs.starship = {
     enable = true;
     package = pkgs.starship;
+    enableZshIntegration = true;
     settings = {
       add_newline = false;
       buf = {

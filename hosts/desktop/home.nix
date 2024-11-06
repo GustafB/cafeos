@@ -12,6 +12,7 @@
   imports = [
     ../../home/modules/hyprland
     ../../home/modules/dev
+    ../../home/modules/shell
     ../../home/modules/programs
   ];
 

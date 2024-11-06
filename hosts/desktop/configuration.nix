@@ -44,28 +44,15 @@
 
   environment.systemPackages = with pkgs; [
     vim
-    wget
-    curl
-    killall
-    jq
     kitty
     git
-    btop
-    killall
     fastfetch
-    eza
-    fzf
-    tree
-    fd
-    bat
     brave
     libvirt
     ripgrep
     lshw
     pkg-config
     libnotify
-    unrar
-    unzip
     lxqt.lxqt-policykit
   ];
 
