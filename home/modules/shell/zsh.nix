@@ -3,14 +3,14 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    # load personal config and enable emacs keybinds for cmdline
+
     initExtra = ''
       fastfetch
       if [[ -f $HOME/.zshrc-personal ]]; then
       source $HOME/.zshrc-personal
       fi
       bindkey -e
-      	  '';
+    '';
     shellAliases = {
       sv = "sudo nvim";
       v = "nvim";
@@ -41,9 +41,11 @@
       "..3" = "cd ../../..";
       "..4" = "cd ../../../..";
 
-      "wifi" = "nmtui";
-      rebuild = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
+      rb = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
+      nx = "nix-shell";
+
       poweroff = "sudo shutdown -h now";
+      wifi = "nmtui";
     };
   };
 }

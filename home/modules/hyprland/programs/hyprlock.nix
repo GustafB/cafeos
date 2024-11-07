@@ -49,7 +49,7 @@ in
           monitor = "${primary}";
           text = "cmd[update:1000] echo \"$(date +\"%A, %-d %B %Y\")\"";
           font_family = "JetBrainsMono Nerd Font Mono";
-          font_size = "32";
+          font_size = "24";
           position = "0, 0";
           halign = "center";
           valign = "center";
