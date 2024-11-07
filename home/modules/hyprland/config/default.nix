@@ -1,8 +1,6 @@
 {
   lib,
-  username,
   host,
-  config,
   ...
 }:
 
@@ -16,6 +14,15 @@ in
 
 with lib;
 {
+  imports = [
+    ./assets
+  ];
+
+  custom.assets = {
+    enable = true;
+    assetsPath = ./assets;
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland = {

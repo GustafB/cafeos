@@ -1,5 +1,4 @@
 {
-  pkgs,
   username,
   ...
 }:
@@ -17,7 +16,4 @@
     ../../home/modules/config
   ];
 
-  programs = {
-    home-manager.enable = true;
-  };
 }

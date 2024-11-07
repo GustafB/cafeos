@@ -1,11 +1,10 @@
 {
-  assets,
-  pkgs,
-  lib,
-  config,
-  inputs,
+  username,
   ...
 }:
+let
+  wallpaperDir = "/home/${username}/.config/cafeos-assets/wallpapers";
+in
 {
   services.hyprpaper = {
     enable = true;
@@ -13,11 +12,11 @@
       ipc = "off";
       splash = "false";
       preload = [
-        "/home/cafebabe/cafeos/config/wallpapers/wallpaper.jpg"
+        "${wallpaperDir}/wallpaper.jpg"
       ];
       wallpaper = [
-        "DP-3,/home/cafebabe/cafeos/config/wallpapers/wallpaper.jpg"
-        "DP-4,/home/cafebabe/cafeos/config/wallpapers/wallpaper.jpg"
+        "DP-3,${wallpaperDir}/wallpaper.jpg"
+        "DP-4,${wallpaperDir}/wallpaper.jpg"
       ];
     };
   };

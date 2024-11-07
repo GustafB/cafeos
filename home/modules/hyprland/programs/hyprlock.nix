@@ -1,8 +1,10 @@
 {
-  inputs,
-  pkgs,
+  username,
   ...
 }:
+let
+  images = "/home/${username}/.config/cafeos-assets/images";
+in
 {
   programs.hyprlock = {
     enable = true;
@@ -31,7 +33,7 @@
       ];
       image = [
         {
-          path = "/home/cafebabe/cafeos/config/images/face.jpg";
+          path = "${images}/face.jpg";
           size = 150;
           border_size = 4;
           border_color = "rgb(0C96F9)";
