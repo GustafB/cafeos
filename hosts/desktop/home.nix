@@ -14,15 +14,7 @@
     ../../home/modules/dev
     ../../home/modules/shell
     ../../home/modules/programs
-  ];
-
-  home.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "JetBrainsMono"
-        "DroidSansMono"
-      ];
-    })
+    ../../home/modules/config
   ];
 
   programs = {

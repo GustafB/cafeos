@@ -13,6 +13,7 @@
     ../../modules/config/il8.nix
     ../../modules/config/xdg.nix
     ../../modules/config/security.nix
+    ../../modules/config/fonts.nix
 
     ../../modules/hardware/graphics.nix
     ../../modules/hardware/nvidia.nix
@@ -55,19 +56,6 @@
     libnotify
     lxqt.lxqt-policykit
   ];
-
-  # fonts = {
-  #   packages = with pkgs; [
-  #     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-  #   ];
-  #   fontconfig = {
-  #     defaultFonts = {
-  #       monospace = [ "JetBrainsMono Nerd Font Mono" ];
-  #       serif = [ "Montserrat" ];
-  #       sansSerif = [ "Montserrat" ];
-  #     };
-  #   };
-  # };
 
   services = {
     libinput.enable = true;
