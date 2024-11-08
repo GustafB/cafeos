@@ -42,7 +42,7 @@
       "..4" = "cd ../../../..";
 
       rb = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
-      nx = "nix-shell";
+      nx = "nix-shell --run zsh";
 
       poweroff = "sudo shutdown -h now";
       wifi = "nmtui";
