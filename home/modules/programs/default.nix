@@ -11,5 +11,7 @@
     ./git.nix
 
     ./rofi
+
+    ./go-modules/swaggo.nix
   ];
 }
