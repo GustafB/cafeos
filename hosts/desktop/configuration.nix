@@ -14,6 +14,8 @@
     ../../modules/config/xdg.nix
     ../../modules/config/security.nix
     ../../modules/config/fonts.nix
+    ../../modules/config/garbage-collection.nix
+    ../../modules/config/virtualization.nix
 
     ../../modules/hardware/graphics.nix
     ../../modules/hardware/nvidia.nix
@@ -21,7 +23,7 @@
 
     ../../modules/programs
 
-    (import ../../modules/services { inherit pkgs username; })
+    ../../modules/services
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -49,7 +51,6 @@
     git
     fastfetch
     brave
-    libvirt
     lshw
     pkg-config
     libnotify
