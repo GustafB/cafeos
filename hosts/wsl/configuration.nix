@@ -43,5 +43,7 @@
     pkg-config
   ];
 
-  system.stateVersion = "24.11";
+  # First-install marker for this host (NixOS-WSL bootstrapped on 26.05 Yarara).
+  # Leave this pinned even as the running nixpkgs moves on.
+  system.stateVersion = "26.05";
 }
