@@ -13,6 +13,11 @@
     neovim
     nodejs # node provider + node-based LSPs/tools
 
+    # nvim-treesitter (main branch) compiles parsers at install time and needs
+    # the tree-sitter CLI + a C compiler on PATH.
+    tree-sitter
+    gcc
+
     # telescope
     fd
     ripgrep
