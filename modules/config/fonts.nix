@@ -11,12 +11,10 @@ lib.mkIf vars.gui {
     packages = with pkgs; [
       corefonts
 
-      (nerdfonts.override {
-        fonts = [
-          "JetBrainsMono"
-          "DroidSansMono"
-        ];
-      })
+      # nerdfonts.override was removed; fonts are now individual packages
+      # under the nerd-fonts namespace.
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.droid-sans-mono
 
     ];
   };
