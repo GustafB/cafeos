@@ -7,7 +7,9 @@
 {
   home.username = username;
   home.homeDirectory = "/home/${username}";
-  home.stateVersion = "26.05";
+  # NB: home-manager has its own stateVersion enum (released HM versions),
+  # distinct from NixOS's system.stateVersion. Newest the pinned HM supports.
+  home.stateVersion = "24.11";
   fonts.fontconfig.enable = vars.gui;
 
   imports = [
