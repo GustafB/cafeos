@@ -22,7 +22,9 @@
     pkgs.buildGoModule {
       src = repoPath;
       nativeBuildInputs = [ pkgs.musl ];
-      CGO_ENABLED = 0;
+      # structured-attrs stdenv: CGO_ENABLED must live in `env`, not as a
+      # top-level derivation argument (buildGoModule also sets env.CGO_ENABLED).
+      env.CGO_ENABLED = 0;
       ldflags = [ ];
       name = pname;
       proxyVendor = true;
