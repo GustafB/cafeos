@@ -4,7 +4,7 @@
 }:
 {
   home.packages = with pkgs; [
-    (python311.withPackages (
+    (python313.withPackages (
       ps: with ps; [
         setuptools
         jupyter

@@ -1,7 +1,7 @@
 {
   imports = [
     ./go.nix
-    ./python311.nix
+    ./python313.nix
     ./claude-code.nix
   ];
 }
