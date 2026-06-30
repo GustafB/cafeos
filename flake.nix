@@ -44,6 +44,11 @@
               ;
           };
           modules = [
+            # Set the platform centrally so headless hosts (e.g. WSL) that have
+            # no generated hardware.nix still know their system. A plain
+            # definition here overrides the `lib.mkDefault` that a generated
+            # hardware.nix uses, so bare-metal hosts keep working too.
+            { nixpkgs.hostPlatform = system; }
             ./hosts/${host}/configuration.nix
             home-manager.nixosModules.home-manager
             {
