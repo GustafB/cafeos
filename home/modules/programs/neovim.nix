@@ -41,19 +41,9 @@
     shellcheck
     shellharden
 
-    # python
-    (python313.withPackages (
-      ps: with ps; [
-        pynvim # python provider
-        setuptools
-        black
-        isort
-        debugpy
-        ruff
-        pyright
-        mypy
-      ]
-    ))
+    # python LSP/formatters are installed by LazyVim's python extra via Mason
+    # (nix-ld makes them run). The python3 provider comes from dev/python313.nix
+    # (which carries pynvim), so no second python env is added here.
 
     # additional
     marksman
