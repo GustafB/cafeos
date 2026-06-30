@@ -9,8 +9,7 @@
       vimdiffAlias = true;
       withNodeJs = true;
       extraPackages = with pkgs; [
-        nodePackages.npm
-        nodePackages.neovim
+        # node provider (nodejs + neovim client) is supplied by withNodeJs
 
         # for telescope
         fd
@@ -30,7 +29,6 @@
 
         # lua
         lua-language-server
-        luajitPackages.lua-lsp
         stylua
 
         # C, C++
@@ -43,7 +41,7 @@
         shellharden
 
         # python
-        (python311.withPackages (
+        (python313.withPackages (
           ps: with ps; [
             setuptools
             black
