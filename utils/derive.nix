@@ -21,11 +21,9 @@
     in
     pkgs.buildGoModule {
       src = repoPath;
-      nativeBuildInputs = [ pkgs.musl ];
-      # structured-attrs stdenv: CGO_ENABLED must live in `env`, not as a
-      # top-level derivation argument (buildGoModule also sets env.CGO_ENABLED).
-      env.CGO_ENABLED = 0;
-      ldflags = [ ];
+      # Let buildGoModule own CGO_ENABLED. This stdenv sets it both in `env`
+      # and as a top-level derivation arg, so overriding it either way collides
+      # with the other copy. swaggo is pure Go, so the default build is fine.
       name = pname;
       proxyVendor = true;
       vendorHash = vendorHash;
