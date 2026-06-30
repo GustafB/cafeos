@@ -3,49 +3,97 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
 
-    initExtra = ''
-      fastfetch
-      if [[ -f $HOME/.zshrc-personal ]]; then
-      source $HOME/.zshrc-personal
-      fi
-      bindkey -e
-    '';
+    history = {
+      size = 1000000;
+      save = 1000000;
+      ignoreDups = true;
+      ignoreSpace = true;
+      share = true;
+    };
+
     shellAliases = {
-      sv = "sudo nvim";
+      # editors
       v = "nvim";
-      cat = "bat --color=always --theme=base16";
+      vi = "nvim";
+      vim = "nvim";
+      sv = "sudo nvim";
 
-      ls = "eza --icons";
-      la = "eza -lah --tree";
-      ll = "eza -lh --git --icons --color=auto --group-directories-first -s extension";
-      cp = "cp -iv";
+      # listing (eza)
+      ls = "eza --icons --group-directories-first";
+      ll = "eza --icons --group-directories-first -l --git";
+      la = "eza --icons --group-directories-first -la";
+      lal = "eza --icons --group-directories-first -la";
+      cat = "bat --plain";
+
+      # safer file ops
       rm = "rm -iv";
+      cp = "cp -iv";
       mv = "mv -iv";
 
-      g = "git";
-      ga = "git add";
-      gall = "git add --all";
-      gb = "git branch";
-      gc = "git commit -v";
-      gcm = "git commit --message";
-      gds = "git diff --staged";
-      gd = "git diff";
-      gs = "git status";
-      gp = "git push";
+      # screen / dirs
+      c = "clear";
+      cl = "clear; ll";
+      cla = "clear; la";
+      d = "dirs -v";
 
-      untar = "tar -xvf";
-
+      # navigation
       ".." = "cd ..";
       "..2" = "cd ../..";
       "..3" = "cd ../../..";
       "..4" = "cd ../../../..";
+      "..5" = "cd ../../../../..";
 
+      # grep -> ripgrep (interactive only; aliases don't affect scripts)
+      grep = "rg --color=auto";
+
+      # git
+      g = "git";
+      ga = "git add";
+      gall = "git add --all";
+      gu = "git add -u";
+      gb = "git branch";
+      gc = "git commit -m";
+      gco = "git checkout";
+      gsw = "git switch";
+      gd = "git diff";
+      gdw = "git diff --word-diff=color";
+      gds = "git diff --word-diff=color --staged";
+      gs = "git status";
+      gp = "git push origin $(git rev-parse --abbrev-ref HEAD)";
+      glog = "git log --oneline";
+      grv = "git remote -v";
+
+      # misc
+      untar = "tar -xvf";
+      act = "source ./.venv/bin/activate";
+      win = "explorer.exe ."; # open current dir in Windows Explorer
+
+      # nix
       rb = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
       nx = "nix-shell --run zsh";
-
-      poweroff = "sudo shutdown -h now";
-      wifi = "nmtui";
     };
+
+    initExtra = ''
+      bindkey -e
+
+      # machine-local / private extras (not managed by nix)
+      [[ -f "$HOME/priv/saporo_env" ]] && source "$HOME/priv/saporo_env"
+      [[ -f "$HOME/.zsh_local" ]] && source "$HOME/.zsh_local"
+
+      # --- functions ---
+      # git diff fuzzy picker
+      gfd() {
+        local preview='git diff --color=always -- {-1}'
+        git diff --name-only -z "$@" | tr -d '\n' | tr '\0' '\n' | fzf -m --ansi --preview "$preview"
+      }
+
+      # saporo docker helpers
+      dsql() { docker exec "$(docker ps -q -f name=psql)" psql -U postgres main -c "$1"; }
+      isql() { docker exec -it "$(docker ps -q -f name=psql)" psql -U postgres main; }
+      mg()   { docker exec -it "$(docker ps -q -f name=mg)" mgconsole --term-colors=true; }
+    '';
   };
 }

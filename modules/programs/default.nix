@@ -6,5 +6,6 @@
     ./thunar.nix
     ./ssh.nix
     ./1password.nix
+    ./nix-ld.nix
   ];
 }

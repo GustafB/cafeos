@@ -1,5 +1,17 @@
-{ pkgs, inputs, ... }:
 {
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
+{
+  # LazyVim config lives in the dotfiles clone and stays editable/writable
+  # (LazyVim & Mason write lazy-lock.json / state in place). An out-of-store
+  # symlink points at the live working copy rather than a frozen /nix/store
+  # copy, so ~/dotfiles must be cloned for nvim to find its config.
+  xdg.configFile."nvim".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/config/nvim";
+
   programs = {
     neovim = {
       enable = true;
