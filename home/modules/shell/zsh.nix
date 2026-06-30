@@ -76,7 +76,7 @@
       nx = "nix-shell --run zsh";
     };
 
-    initExtra = ''
+    initContent = ''
       bindkey -e
 
       # machine-local / private extras (not managed by nix)
