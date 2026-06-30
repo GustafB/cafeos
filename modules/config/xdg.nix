@@ -1,6 +1,11 @@
-{ pkgs, ... }:
 {
-  # grapics
+  pkgs,
+  lib,
+  vars,
+  ...
+}:
+lib.mkIf vars.gui {
+  # graphics
   xdg.portal = {
     enable = true;
     wlr.enable = true;

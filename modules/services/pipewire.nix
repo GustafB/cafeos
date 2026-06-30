@@ -1,4 +1,9 @@
 {
+  lib,
+  vars,
+  ...
+}:
+lib.mkIf vars.gui {
   services.pipewire = {
     enable = true;
     audio.enable = true; # enables pavucontrol

@@ -1,11 +1,11 @@
 {
   lib,
-  host,
+  vars,
   ...
 }:
 
 let
-  inherit (import ../../../../hosts/${host}/variables.nix)
+  inherit (vars)
     terminal
     monitorSettings
     keyboardLayout

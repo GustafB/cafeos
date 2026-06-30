@@ -1,4 +1,9 @@
 {
+  lib,
+  vars,
+  ...
+}:
+lib.mkIf vars.gui {
   programs = {
     _1password.enable = true;
     _1password-gui = {

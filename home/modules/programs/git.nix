@@ -1,11 +1,11 @@
 {
   pkgs,
   lib,
-  host,
+  vars,
   ...
 }:
 let
-  inherit (import ../../../hosts/${host}/variables.nix) gitUsername gitEmail gitPublicKey;
+  inherit (vars) gitUsername gitEmail gitPublicKey;
 in
 {
 

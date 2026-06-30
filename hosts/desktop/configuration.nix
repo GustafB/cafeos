@@ -10,20 +10,7 @@
     ./hardware.nix
     ./users.nix
 
-    ../../modules/config/il8.nix
-    ../../modules/config/xdg.nix
-    ../../modules/config/security.nix
-    ../../modules/config/fonts.nix
-    ../../modules/config/garbage-collection.nix
-    ../../modules/config/virtualization.nix
-
-    ../../modules/hardware/graphics.nix
-    ../../modules/hardware/nvidia.nix
-    ../../modules/hardware/bluetooth.nix
-
-    ../../modules/programs
-
-    ../../modules/services
+    ../../modules
   ];
 
   boot.loader.systemd-boot.enable = true;

@@ -2,15 +2,13 @@
   ...
 }:
 {
+  # Portable (non-GUI) home-manager programs shared by every host.
+  # GUI programs (kitty, waybar, rofi) live in ../desktop.
   imports = [
     ./home-manager.nix
 
-    ./kitty.nix
-    ./waybar.nix
     ./neovim.nix
     ./git.nix
-
-    ./rofi
 
     ./go-modules/swaggo.nix
   ];

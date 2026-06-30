@@ -6,6 +6,8 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hyprland.url = "github:hyprwm/Hyprland";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -17,36 +19,41 @@
     }@inputs:
 
     let
-      system = "x86_64-linux";
-      host = "desktop";
       username = "cafebabe";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
 
-    {
-      devShells.${system}.default = pkgs.mkShell {
-        packages =
-          with pkgs;
-          [
-          ];
-      };
-
-      nixosConfigurations = {
-        "${host}" = nixpkgs.lib.nixosSystem {
+      # Build a NixOS system for a host directory under ./hosts.
+      # Each host carries its own variables.nix (see `vars`), which drives
+      # feature toggles such as `vars.gui` so the same module tree can target
+      # a full desktop or a headless WSL install.
+      mkHost =
+        {
+          host,
+          system ? "x86_64-linux",
+        }:
+        let
+          vars = import ./hosts/${host}/variables.nix;
+        in
+        nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit system;
-            inherit inputs;
-            inherit username;
-            inherit host;
+            inherit
+              inputs
+              system
+              username
+              host
+              vars
+              ;
           };
           modules = [
             ./hosts/${host}/configuration.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
-                inherit username;
-                inherit inputs;
-                inherit host;
+                inherit
+                  inputs
+                  username
+                  host
+                  vars
+                  ;
               };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -55,6 +62,20 @@
             }
           ];
         };
+    in
+
+    {
+      devShells."x86_64-linux".default =
+        nixpkgs.legacyPackages."x86_64-linux".mkShell {
+          packages = with nixpkgs.legacyPackages."x86_64-linux"; [
+          ];
+        };
+
+      nixosConfigurations = {
+        desktop = mkHost { host = "desktop"; };
+        wsl = mkHost { host = "wsl"; };
+        # laptop is still on the pre-refactor layout; migrate it to the shared
+        # module tree (mirror hosts/desktop) before re-enabling it here.
       };
     };
 }

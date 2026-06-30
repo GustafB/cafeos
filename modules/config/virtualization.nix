@@ -1,5 +1,10 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  lib,
+  vars,
+  ...
+}:
+lib.mkIf vars.gui {
   virtualisation = {
     libvirtd.enable = true;
     podman = {

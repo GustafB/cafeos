@@ -1,9 +1,11 @@
 {
   pkgs,
   username,
+  lib,
+  vars,
   ...
 }:
-{
+lib.mkIf vars.gui {
   services.greetd = {
     enable = true;
     vt = 3;

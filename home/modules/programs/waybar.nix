@@ -1,13 +1,9 @@
 {
   pkgs,
   lib,
-  host,
   config,
   ...
 }:
-let
-  inherit (import ../hosts/${host}/variables.nix) ;
-in
 with lib;
 {
   programs.waybar = {
