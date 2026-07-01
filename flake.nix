@@ -78,9 +78,8 @@
 
       nixosConfigurations = {
         desktop = mkHost { host = "desktop"; };
+        laptop = mkHost { host = "laptop"; };
         wsl = mkHost { host = "wsl"; };
-        # laptop is still on the pre-refactor layout; migrate it to the shared
-        # module tree (mirror hosts/desktop) before re-enabling it here.
       };
     };
 }

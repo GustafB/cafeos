@@ -31,22 +31,38 @@ home/modules/          # shared home-manager modules
 home/modules/desktop/  # GUI-only home modules (hyprland, kitty, waybar, rofi)
 ```
 
-## Build / switch
+## Fresh install
 
-Desktop (bare-metal NixOS):
+On a freshly installed NixOS machine (with a normal user account created during
+the NixOS install):
 
 ```sh
-sudo nixos-rebuild switch --flake .#desktop
+nix-shell -p git                      # if git isn't available yet
+git clone <this-repo> ~/cafeos
+cd ~/cafeos
+./install-cafeos.sh                    # defaults to the "laptop" host
 ```
 
-WSL (after installing the NixOS-WSL distro and cloning this repo):
+`install-cafeos.sh` verifies it's on NixOS, sets the `username` in `flake.nix`
+and `keyboardLayout` in the host's `variables.nix`, generates this machine's
+`hosts/<host>/hardware.nix`, stages it so the flake can see it, and runs the
+first `nixos-rebuild switch --flake .#<host>`. Pass a host name to install a
+different one, e.g. `./install-cafeos.sh desktop`.
+
+## Build / switch
+
+Once installed, rebuild with the matching host:
 
 ```sh
-sudo nixos-rebuild switch --flake .#wsl
+sudo nixos-rebuild switch --flake .#desktop   # bare-metal desktop
+sudo nixos-rebuild switch --flake .#laptop    # bare-metal laptop
+sudo nixos-rebuild switch --flake .#wsl        # NixOS-WSL
 ```
 
 ## Notes
 
-- The `laptop` host still uses the pre-refactor layout and is not wired into
-  `flake.nix`; mirror `hosts/desktop` to migrate it.
-- `hosts/default` is the install-time template (no `hardware.nix`).
+- `hosts/default` is a bare template (no `hardware.nix`) and is not wired into
+  `flake.nix`; the real hosts (`desktop`, `laptop`, `wsl`) each carry their own
+  generated `hardware.nix`.
+- The `laptop` host defaults to `drivers.nvidia.enable = false`; flip it to
+  `true` in `hosts/laptop/configuration.nix` if the machine has an Nvidia GPU.

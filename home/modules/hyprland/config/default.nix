@@ -25,6 +25,9 @@ with lib;
 
   wayland.windowManager.hyprland = {
     enable = true;
+    # Keep the legacy hyprlang config format explicitly (the home-manager
+    # default flips to "lua" at stateVersion 26.05); this config is hyprlang.
+    configType = "hyprlang";
     xwayland = {
       enable = true;
     };
@@ -45,14 +48,13 @@ with lib;
           env = XDG_SESSION_TYPE, wayland
           env = GDK_BACKEND, wayland
           env = CLUTTER_BACKEND, wayland
-          env = QT_QPA_PLATFORM=wayland;xcb
+          env = QT_QPA_PLATFORM, wayland;xcb
           env = QT_WAYLAND_DISABLE_WINDOWDECORATION, 1
           env = QT_AUTO_SCREEN_SCALE_FACTOR, 1
           env = MOZ_ENABLE_WAYLAND, 1
           env = SDL_VIDEODRIVER, wayland
           exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-          exec-once = killall -q swww;sleep .5 && swww init
-          exec-once = killall -q waybar;sleep .5 && waybar 
+          exec-once = killall -q waybar;sleep .5 && waybar
           exec-once = lxqt-policykit-agent
           exec-once = hypridle
           exec-once = hyprlock
@@ -119,16 +121,16 @@ with lib;
 
           input {
             kb_layout = ${keyboardLayout}
-            kb_options = grp:alt_shift_toggle
-            kb_options = ctrl:nocaps
+            kb_options = grp:alt_shift_toggle, ctrl:nocaps
             follow_mouse = 1
             touchpad {
               natural_scroll = true
               disable_while_typing = true
               scroll_factor = 0.8
             }
+          }
 
-            bind = ${modifier},Return,exec,${terminal}
+          bind = ${modifier},Return,exec,${terminal}
             bind = ${modifier}SHIFT,Return,exec,rofi-launcher
             bind = ${modifier},Q,killactive,
             bind = ${modifier}SHIFT,C,exit,
@@ -175,7 +177,6 @@ with lib;
             bind = ${modifier}SHIFT,0,movetoworkspace,10
             bind = ALT,Tab,cyclenext
             bind = ALT,Tab,bringactivetotop
-          }
         ''
       ];
   };

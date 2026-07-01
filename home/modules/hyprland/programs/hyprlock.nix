@@ -4,8 +4,9 @@
 }:
 let
   images = "/home/${username}/.config/cafeos-assets/images";
-  primary = "DP-4";
-  secondary = "DP-3";
+  # empty monitor = render on every output, so the lock screen works on any
+  # host (multi-monitor desktop or single-panel laptop).
+  primary = "";
 in
 {
   programs.hyprlock = {
@@ -18,15 +19,10 @@ in
       };
       background = [
         {
-          monitor = "${secondary}";
-          path = "/tmp/screenlock_0.png";
-          blur_passes = 3;
-          blur_size = 8;
-          new_optimizations = true;
-        }
-        {
-          monitor = "${primary}";
-          path = "/tmp/screenlock_1.png";
+          monitor = "";
+          # hyprlock captures a live screenshot of each output itself — no
+          # external grim/tmp-file plumbing and no hardcoded monitor names.
+          path = "screenshot";
           blur_passes = 3;
           blur_size = 8;
           new_optimizations = true;

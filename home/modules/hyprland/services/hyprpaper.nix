@@ -14,9 +14,10 @@ in
       preload = [
         "${wallpaperDir}/wallpaper.jpg"
       ];
+      # empty monitor = apply to every output (host-agnostic: desktop DP-*,
+      # laptop eDP-1, etc.)
       wallpaper = [
-        "DP-3,${wallpaperDir}/wallpaper.jpg"
-        "DP-4,${wallpaperDir}/wallpaper.jpg"
+        ",${wallpaperDir}/wallpaper.jpg"
       ];
     };
   };

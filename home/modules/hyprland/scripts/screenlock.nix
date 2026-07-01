@@ -1,8 +1,9 @@
 { pkgs, ... }:
 let
+  # hyprlock now captures its own per-output screenshot (path = "screenshot"
+  # in hyprlock.nix), so this wrapper just launches it. Kept as its own command
+  # so the keybind / future pre-lock hooks have a stable entry point.
   screenlock = pkgs.writeShellScriptBin "screenlock" ''
-    grim -o DP-3 -l 0 /tmp/screenlock_0.png &
-    grim -o DP-4 -l 0 /tmp/screenlock_1.png &
     hyprlock
   '';
 in
