@@ -28,19 +28,26 @@ in
     gitflow
   ];
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options.dark = true;
+  };
+
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
 
-    userName = gitUsername;
-    userEmail = gitEmail;
+    # Everything now lives under `settings`, which renders through
+    # lib.generators.toGitINI just like the old `extraConfig` did — so nested
+    # attrs (and subsections like `gpg "ssh"`) map straight onto gitconfig.
+    settings = {
+      user = {
+        name = gitUsername;
+        email = gitEmail;
+        signingKey = gitPublicKey;
+      };
 
-    delta = {
-      enable = true;
-      options.dark = true;
-    };
-
-    extraConfig = {
       push.default = "current";
       merge.stat = "true";
       core = {
@@ -61,29 +68,21 @@ in
         enabled = true;
         autoStash = true;
       };
-      gpg = {
-        format = "ssh";
+      gpg.format = "ssh";
+      "gpg \"ssh\"".program = opSshSign;
+      commit.gpgsign = true;
+
+      alias = {
+        un = "reset HEAD~1 --mixed";
+        am = "commit -a --amend";
+        cm = "commit -m";
+        s = "status";
+        ds = "diff --staged";
+        all = "add .";
+        au = "add -u";
+        one = "log --oneline";
+        p = "!git push origin $(git rev-parse --abbrev-ref HEAD)";
       };
-      "gpg \"ssh\"" = {
-        program = opSshSign;
-      };
-      commit = {
-        gpgsign = true;
-      };
-      user = {
-        signingKey = gitPublicKey;
-      };
-    };
-    aliases = {
-      un = "reset HEAD~1 --mixed";
-      am = "commit -a --amend";
-      cm = "commit -m";
-      s = "status";
-      ds = "diff --staged";
-      all = "add .";
-      au = "add -u";
-      one = "log --oneline";
-      p = "!git push origin $(git rev-parse --abbrev-ref HEAD)";
     };
   };
 

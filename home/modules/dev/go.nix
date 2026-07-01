@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home.packages = with pkgs; [
     gofumpt
@@ -13,7 +13,11 @@
 
   programs.go = {
     enable = true;
-    goPath = ".go";
-    goBin = ".local/bin";
+    # goPath/goBin were renamed to env.GOPATH/env.GOBIN, which now take
+    # absolute paths (the old options prepended $HOME implicitly).
+    env = {
+      GOPATH = "${config.home.homeDirectory}/.go";
+      GOBIN = "${config.home.homeDirectory}/.local/bin";
+    };
   };
 }
