@@ -56,6 +56,7 @@ with lib;
           exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
           exec-once = eww daemon && eww open bar
           exec-once = lxqt-policykit-agent
+          exec-once = 1password --silent
           exec-once = hypridle
           exec-once = hyprlock
           monitor=,preferred,auto,1
