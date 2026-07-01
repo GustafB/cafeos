@@ -14,9 +14,9 @@
     nodejs # node provider + node-based LSPs/tools
 
     # nvim-treesitter (main branch) compiles parsers at install time and needs
-    # the tree-sitter CLI + a C compiler on PATH.
+    # the tree-sitter CLI + a C compiler on PATH. The compiler (gcc) comes from
+    # dev/cpp.nix, which every host imports alongside this module.
     tree-sitter
-    gcc
 
     # telescope
     fd
@@ -37,8 +37,7 @@
     lua-language-server
     stylua
 
-    # C, C++
-    clang-tools
+    # C, C++ (clang-tools / clangd comes from dev/cpp.nix)
     cppcheck
 
     # shell

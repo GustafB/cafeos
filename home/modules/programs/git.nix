@@ -6,6 +6,20 @@
 }:
 let
   inherit (vars) gitUsername gitEmail gitPublicKey;
+
+  isWsl = vars.wsl or false;
+
+  # SSH commit signing goes through 1Password's SSH agent.
+  #   - GUI hosts: the Linux 1Password app provides op-ssh-sign, talking to
+  #     ~/.1password/agent.sock (see modules/programs/1password.nix).
+  #   - WSL: there is no Linux 1Password app. The desktop app runs on Windows;
+  #     we sign via its WSL bridge binary and route SSH auth through Windows'
+  #     ssh.exe using native WSL interop (no socket forwarding needed).
+  opSshSign =
+    if isWsl then
+      "/mnt/c/Users/${vars.windowsUsername}/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe"
+    else
+      lib.getExe' pkgs._1password-gui "op-ssh-sign";
 in
 {
 
@@ -29,7 +43,14 @@ in
     extraConfig = {
       push.default = "current";
       merge.stat = "true";
-      core.whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol";
+      core = {
+        whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol";
+      }
+      // lib.optionalAttrs isWsl {
+        # Use the Windows OpenSSH client so SSH auth (push/pull, signing) is
+        # served by the 1Password agent running in the Windows desktop app.
+        sshCommand = "ssh.exe";
+      };
       repack.usedeltabaseoffset = "true";
       pull.ff = "only";
       rebase = {
@@ -44,7 +65,7 @@ in
         format = "ssh";
       };
       "gpg \"ssh\"" = {
-        program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+        program = opSshSign;
       };
       commit = {
         gpgsign = true;

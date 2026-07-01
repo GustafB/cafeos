@@ -21,6 +21,7 @@
   wsl = {
     enable = true;
     defaultUser = username;
+    docker-desktop.enable = true;
   };
 
   networking.hostName = host;
