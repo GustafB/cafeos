@@ -11,6 +11,7 @@
     ./config/xdg.nix
     ./config/security.nix
     ./config/fonts.nix
+    ./config/stylix.nix
     ./config/garbage-collection.nix
     ./config/virtualization.nix
 

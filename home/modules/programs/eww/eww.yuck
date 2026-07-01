@@ -1,0 +1,149 @@
+;; ╔══════════════════════════════════════════════════════════╗
+;; ║  cafeos — eww top bar (floating islands, Tokyo Night)     ║
+;; ║  Colours come from eww.scss, generated from the stylix    ║
+;; ║  palette; this file is layout + behaviour only.           ║
+;; ╚══════════════════════════════════════════════════════════╝
+
+;; ─────────────────────────── data sources ───────────────────────────
+(deflisten workspaces  :initial "[]"    "bash scripts/workspaces.sh")
+(deflisten cur-window  :initial ""       "bash scripts/window.sh")
+
+(defpoll clock-time :interval "10s"  :initial "--:--" "date +'%H:%M'")
+(defpoll cal-day    :interval "1h"   :initial "1"  "date +%-d")
+(defpoll cal-month  :interval "1h"   :initial "1"  "date +%-m")
+(defpoll cal-year   :interval "1h"   :initial "2026" "date +%Y")
+
+(defpoll vol       :interval "1s"  :initial "0"   "bash scripts/volume.sh get")
+(defpoll vol-icon  :interval "1s"  :initial "󰕾"   "bash scripts/volume.sh icon")
+(defpoll bright    :interval "3s"  :initial "-1"  "bash scripts/brightness.sh get")
+(defpoll battery   :interval "10s" :initial "{\"capacity\":0,\"status\":\"None\",\"icon\":\"󰂑\"}" "bash scripts/battery.sh")
+(defpoll wifi-name :interval "10s" :initial "…"    "bash scripts/wifi.sh status")
+(defpoll wifi-icon :interval "10s" :initial "󰤨"    "bash scripts/wifi.sh icon")
+(defpoll wifi-list :interval "15s" :initial "[]"  "bash scripts/wifi.sh list")
+
+;; popup-local state for the wi-fi connect flow
+(defvar wifi-selected "")
+(defvar wifi-pass "")
+
+;; ──────────────────────────── modules ───────────────────────────────
+(defwidget workspaces []
+  (box :class "island ws" :space-evenly false :spacing 4
+    (for ws in workspaces
+      (button :class {ws.active ? "ws-btn active" : ws.occupied ? "ws-btn occupied" : "ws-btn"}
+              :onclick "hyprctl dispatch workspace ${ws.id}"
+        (label :text {ws.active ? "◉" : "○"})))))
+
+(defwidget window []
+  (box :class "island window" :visible {cur-window != ""}
+    (label :class "win-title" :text cur-window :limit-width 55 :show-truncated true)))
+
+(defwidget clock []
+  (button :class "island clock" :onclick "eww open --toggle cal"
+    (box :space-evenly false :spacing 8
+      (label :class "ico" :text "󰥔")
+      (label :text clock-time))))
+
+(defwidget metric [icon value]
+  (box :space-evenly false :spacing 5
+    (label :class "ico" :text icon)
+    (label :text "${value}%")))
+
+(defwidget resources []
+  (box :class "island resources" :space-evenly false :spacing 12
+    (metric :icon "󰍛" :value {round(EWW_RAM.used_percent, 0)})
+    (metric :icon "󰻠" :value {round(EWW_CPU.avg, 0)})))
+
+(defwidget bat []
+  (box :class "island battery" :space-evenly false :spacing 6
+       :visible {battery.status != "None"}
+    (label :class "ico bat-ico" :text {battery.icon})
+    (label :text "${battery.capacity}%")))
+
+(defwidget volume []
+  (eventbox :onscroll "bash scripts/volume.sh scroll {}"
+    (button :class "island vol" :onclick "eww open --toggle audio"
+      (box :space-evenly false :spacing 6
+        (label :class "ico vol-ico" :text vol-icon)
+        (label :text "${vol}%")))))
+
+(defwidget net []
+  (button :class "island net" :onclick "eww open --toggle wifi"
+    (box :space-evenly false :spacing 6
+      (label :class "ico net-ico" :text wifi-icon)
+      (label :text wifi-name :limit-width 14 :show-truncated true))))
+
+(defwidget tray []
+  (box :class "island tray"
+    (systray :spacing 10 :icon-size 16 :prepend-new true)))
+
+;; ───────────────────────────── the bar ──────────────────────────────
+(defwindow bar
+  :monitor 0
+  :stacking "fg"
+  :exclusive true
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "40px" :anchor "top center")
+  (centerbox :class "bar"
+    (box :class "sec left" :halign "start" :space-evenly false :spacing 8
+      (workspaces))
+    (box :class "sec center" :halign "center" :space-evenly false
+      (window))
+    (box :class "sec right" :halign "end" :space-evenly false :spacing 8
+      (tray)
+      (net)
+      (volume)
+      (bat)
+      (resources)
+      (clock))))
+
+;; ──────────────────────────── popups ────────────────────────────────
+(defwindow cal
+  :monitor 0 :stacking "fg"
+  :geometry (geometry :y "8px" :x "16px" :anchor "top right")
+  (box :class "popup cal-popup"
+    (calendar :class "cal" :show-week-numbers false
+              :day cal-day :month {cal-month - 1} :year cal-year)))
+
+(defwindow audio
+  :monitor 0 :stacking "fg"
+  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "300px")
+  (box :class "popup audio-popup" :orientation "v" :space-evenly false :spacing 12
+    (label :class "popup-title" :halign "start" :text "Volume")
+    (box :space-evenly false :spacing 10
+      (button :class "ico vol-ico" :onclick "bash scripts/volume.sh toggle" vol-icon)
+      (scale :class "slider vol-scale" :hexpand true :value vol :min 0 :max 101
+             :onchange "bash scripts/volume.sh set {}"))
+    (label :class "popup-title" :halign "start" :text "Brightness"
+           :visible {bright >= 0})
+    (box :space-evenly false :spacing 10 :visible {bright >= 0}
+      (label :class "ico" :text "󰃟")
+      (scale :class "slider br-scale" :hexpand true :value bright :min 0 :max 100
+             :onchange "bash scripts/brightness.sh set {}"))))
+
+(defwindow wifi
+  :monitor 0 :stacking "fg"
+  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "330px")
+  (box :class "popup wifi-popup" :orientation "v" :space-evenly false :spacing 10
+    (box :class "wifi-head" :space-evenly false
+      (label :class "popup-title" :hexpand true :halign "start" :text "Wi-Fi")
+      (button :class "refresh"
+              :onclick "bash scripts/wifi.sh scan >/dev/null 2>&1 &" "󰑐"))
+    (scroll :vscroll true :hscroll false :height 280
+      (box :orientation "v" :space-evenly false :spacing 4
+        (for nw in wifi-list
+          (box :orientation "v" :space-evenly false
+            (button :class {nw.inuse ? "wifi-item active" : "wifi-item"}
+                    :onclick "eww update wifi-pass='' wifi-selected='${nw.ssid}'"
+              (box :space-evenly false :spacing 8
+                (label :class "ico" :text {nw.security != "" ? "󰤪" : "󰤨"})
+                (label :hexpand true :halign "start" :limit-width 20
+                       :show-truncated true :text {nw.ssid})
+                (label :class "sig" :text "${nw.signal}%")))
+            (revealer :transition "slidedown" :duration "150ms"
+                      :reveal {wifi-selected == nw.ssid}
+              (box :class "wifi-connect" :orientation "v" :space-evenly false :spacing 8
+                (input :class "wifi-pass" :password true :value wifi-pass
+                       :onchange "eww update wifi-pass='{}'"
+                       :onaccept "bash scripts/wifi.sh connect '${nw.ssid}' '{}' >/dev/null 2>&1 & eww update wifi-selected='' wifi-pass='' && eww close wifi")
+                (button :class "connect-btn"
+                        :onclick "bash scripts/wifi.sh connect '${nw.ssid}' '${wifi-pass}' >/dev/null 2>&1 & eww update wifi-selected='' wifi-pass='' && eww close wifi"
+                  "Connect")))))))))

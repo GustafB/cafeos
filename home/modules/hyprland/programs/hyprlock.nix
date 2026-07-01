@@ -9,6 +9,11 @@ let
   primary = "";
 in
 {
+  # Keep our custom screenshot-blur lock screen; Stylix's hyprlock target would
+  # override the background. Accent colors here are ported to the palette in a
+  # follow-up (via config.lib.stylix.colors) rather than by this target.
+  stylix.targets.hyprlock.enable = false;
+
   programs.hyprlock = {
     enable = true;
     settings = {

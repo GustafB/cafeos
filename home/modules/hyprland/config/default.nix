@@ -54,7 +54,7 @@ with lib;
           env = MOZ_ENABLE_WAYLAND, 1
           env = SDL_VIDEODRIVER, wayland
           exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-          exec-once = killall -q waybar;sleep .5 && waybar
+          exec-once = eww daemon && eww open bar
           exec-once = lxqt-policykit-agent
           exec-once = hypridle
           exec-once = hyprlock
@@ -66,8 +66,6 @@ with lib;
               gaps_in = 5
               gaps_out = 20
               border_size = 2
-              col.active_border = rgb(f5e0dc)
-              col.inactive_border = rgb(000000)
               resize_on_border = true
               layout = dwindle
           }
@@ -82,10 +80,12 @@ with lib;
                   new_optimizations = true
               }
 
-              drop_shadow = yes
-              shadow_range = 30
-              shadow_render_power = 4
-              col.shadow = rgb(000000)
+              shadow {
+                  enabled = true
+                  range = 30
+                  render_power = 4
+                  color = rgb(000000)
+              }
           }
 
           animations {
@@ -98,7 +98,6 @@ with lib;
           }
 
           dwindle {
-              pseudotile = yes
               preserve_split = yes
           }
 
@@ -106,13 +105,9 @@ with lib;
               disable_hyprland_logo = true
           }
 
-          render {
-              explicit_sync = true
-          }
-
-          windowrule = float,^(pavucontrol)$
-          windowrule = pin,^(pavucontrol)$
-          windowrule = size 900 500,^(pavucontrol)$
+          windowrule = float class:^(pavucontrol)$
+          windowrule = pin class:^(pavucontrol)$
+          windowrule = size 900 500 class:^(pavucontrol)$
 
           xwayland {
             force_zero_scaling = true
@@ -121,7 +116,7 @@ with lib;
 
           input {
             kb_layout = ${keyboardLayout}
-            kb_options = grp:alt_shift_toggle, ctrl:nocaps
+            kb_options = ctrl:nocaps
             follow_mouse = 1
             touchpad {
               natural_scroll = true
@@ -135,7 +130,7 @@ with lib;
             bind = ${modifier},Q,killactive,
             bind = ${modifier}SHIFT,C,exit,
             bind = ${modifier}SHIFT,F,togglefloating,
-            bind = ${modifier}SHIFT,I,togglesplit,
+            bind = ${modifier}SHIFT,I,layoutmsg,togglesplit
             bind = ${modifier}CTRL,l,exec,screenlock
 
             # workspace movement

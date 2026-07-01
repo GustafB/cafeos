@@ -11,11 +11,11 @@ lib.mkIf vars.gui {
     settings = {
       initial_session = {
         user = username;
-        command = "Hyprland";
+        command = "start-hyprland";
       };
       default_session = {
         user = username;
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a * %h | %F' --cmd start-hyprland";
       };
     };
   };

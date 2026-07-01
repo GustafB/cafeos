@@ -9,7 +9,7 @@
     ../hyprland
 
     ../programs/kitty.nix
-    ../programs/waybar.nix
+    ../programs/eww
     ../programs/rofi
   ];
 }

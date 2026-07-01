@@ -8,6 +8,8 @@
     hyprland.url = "github:hyprwm/Hyprland";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
+    stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -50,6 +52,7 @@
             # hardware.nix uses, so bare-metal hosts keep working too.
             { nixpkgs.hostPlatform = system; }
             ./hosts/${host}/configuration.nix
+            inputs.stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
