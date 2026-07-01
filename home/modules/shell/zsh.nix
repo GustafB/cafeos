@@ -1,4 +1,9 @@
-{ host, ... }:
+{
+  host,
+  vars,
+  lib,
+  ...
+}:
 {
   programs.zsh = {
     enable = true;
@@ -74,6 +79,14 @@
       # nix
       rb = "sudo nixos-rebuild switch --flake ~/cafeos/#${host}";
       nx = "nix-shell --run zsh";
+    }
+    // lib.optionalAttrs (vars.wsl or false) {
+      # WSL: route interactive ssh (and ssh-add) through Windows OpenSSH so
+      # they use the 1Password agent, exactly like git's core.sshCommand.
+      # Aliases only affect interactive shells, so scripts keep native Linux
+      # ssh. Note: ssh.exe reads Windows-side ~/.ssh/{config,known_hosts}.
+      ssh = "ssh.exe";
+      "ssh-add" = "ssh-add.exe";
     };
 
     initContent = ''
