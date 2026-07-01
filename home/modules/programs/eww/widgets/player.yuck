@@ -1,0 +1,51 @@
+;; ─────────────────────────── music player (popup) ───────────────────────────
+;; playerctl (MPRIS) wrapper. Modeled on gh0stzk's player, MPRIS-only.
+
+(defpoll mc-player  :interval "2s" :initial "None"    "bash scripts/mediacontrol.sh --player")
+(defpoll mc-status  :interval "1s" :initial "Stopped" "bash scripts/mediacontrol.sh --status")
+(defpoll mc-title   :interval "1s" :initial ""        "bash scripts/mediacontrol.sh --title")
+(defpoll mc-artist  :interval "1s" :initial ""        "bash scripts/mediacontrol.sh --artist")
+(defpoll mc-cover   :interval "3s" :initial ""        "bash scripts/mediacontrol.sh --cover")
+(defpoll mc-time    :interval "1s" :initial "0:00 / 0:00" "bash scripts/mediacontrol.sh --time")
+(defpoll mc-pos     :interval "1s" :initial "0"       "bash scripts/mediacontrol.sh --posseconds")
+(defpoll mc-len     :interval "5s" :initial "1"       "bash scripts/mediacontrol.sh --lenseconds")
+(defpoll mc-shuffle :interval "2s" :initial "Off"     "bash scripts/mediacontrol.sh --shuffle")
+(defpoll mc-loop    :interval "2s" :initial "None"    "bash scripts/mediacontrol.sh --loop")
+
+(defwidget player-controls []
+  (box :class "mc-controls" :space-evenly false :halign "center" :spacing 18
+    (eventbox :cursor "pointer"
+      (button :class {mc-shuffle == "On" ? "mc-btn mc-sm active" : "mc-btn mc-sm"}
+              :onclick "bash scripts/mediacontrol.sh --toggle-shuffle" "󰒟"))
+    (eventbox :cursor "pointer"
+      (button :class "mc-btn" :onclick "bash scripts/mediacontrol.sh --prev" "󰒮"))
+    (eventbox :cursor "pointer"
+      (button :class "mc-btn mc-play" :onclick "bash scripts/mediacontrol.sh --playpause"
+        (label :text {mc-status == "Playing" ? "󰏤" : "󰐊"})))
+    (eventbox :cursor "pointer"
+      (button :class "mc-btn" :onclick "bash scripts/mediacontrol.sh --next" "󰒭"))
+    (eventbox :cursor "pointer"
+      (button :class {mc-loop != "None" ? "mc-btn mc-sm active" : "mc-btn mc-sm"}
+              :onclick "bash scripts/mediacontrol.sh --toggle-loop"
+        (label :text {mc-loop == "Track" ? "󰑖" : "󰑗"})))))
+
+(defwidget player []
+  (box :class "mc-root" :space-evenly false :spacing 16
+    (box :class "mc-art" :valign "center"
+         :style {mc-cover != "" ? "background-image: url('${mc-cover}');" : ""}
+      (label :class "mc-art-fallback" :text {mc-cover == "" ? "󰝚" : ""}))
+    (box :orientation "v" :space-evenly false :spacing 8 :hexpand true :valign "center"
+      (label :class "mc-title" :halign "start" :limit-width 26 :show-truncated true
+             :text {mc-title != "" ? mc-title : "Nothing playing"})
+      (label :class "mc-artist" :halign "start" :limit-width 30 :show-truncated true
+             :text {mc-artist != "" ? mc-artist : mc-player})
+      (scale :class "mc-seek" :hexpand true :value mc-pos :min 0
+             :max {mc-len > 0 ? mc-len : 1}
+             :onchange "bash scripts/mediacontrol.sh --seek {}")
+      (label :class "mc-time" :halign "start" :text mc-time)
+      (player-controls))))
+
+(defwindow player
+  :monitor 0 :stacking "fg"
+  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "360px")
+  (box :class "popup mc-popup" (player)))

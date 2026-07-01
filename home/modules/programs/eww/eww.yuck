@@ -4,6 +4,11 @@
 ;; ║  palette; this file is layout + behaviour only.           ║
 ;; ╚══════════════════════════════════════════════════════════╝
 
+;; popup widgets live in their own files
+(include "widgets/controlcenter.yuck")
+(include "widgets/player.yuck")
+(include "widgets/cheatsheet.yuck")
+
 ;; ─────────────────────────── data sources ───────────────────────────
 (deflisten workspaces  :initial "[]"    "bash scripts/workspaces.sh")
 (deflisten cur-window  :initial ""       "bash scripts/window.sh")
@@ -43,15 +48,28 @@
       (label :class "ico" :text "󰥔")
       (label :text clock-time))))
 
-(defwidget metric [icon value]
-  (box :space-evenly false :spacing 5
-    (label :class "ico" :text icon)
-    (label :text "${value}%")))
+(defwidget ring [icon value css tip]
+  (circular-progress :class "ring ${css}" :value value :thickness 3
+                     :start-at 75 :tooltip "${tip} ${value}%"
+    (label :class "ring-ico" :text icon)))
 
 (defwidget resources []
-  (box :class "island resources" :space-evenly false :spacing 12
-    (metric :icon "󰍛" :value {round(EWW_RAM.used_percent, 0)})
-    (metric :icon "󰻠" :value {round(EWW_CPU.avg, 0)})))
+  (box :class "island resources" :space-evenly false :spacing 10
+    (ring :icon "󰻠" :css "cpu"  :tip "CPU"  :value {round(EWW_CPU.avg, 0)})
+    (ring :icon "󰍛" :css "ram"  :tip "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)})
+    (ring :icon "󰋊" :css "disk" :tip "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
+
+(defwidget launcher []
+  (button :class "island launcher" :onclick "eww open --toggle controlcenter"
+    (label :class "launcher-ico" :text "󱄅")))
+
+(defwidget media []
+  (button :class "island media" :onclick "eww open --toggle player"
+          :visible {mc-player != "None"}
+    (box :space-evenly false :spacing 6
+      (label :class "ico media-ico" :text {mc-status == "Playing" ? "󰝚" : "󰎈"})
+      (label :class "media-title" :limit-width 18 :show-truncated true
+             :text {mc-title != "" ? mc-title : "Music"}))))
 
 (defwidget bat []
   (box :class "island battery" :space-evenly false :spacing 6
@@ -73,7 +91,7 @@
       (label :text wifi-name :limit-width 14 :show-truncated true))))
 
 (defwidget tray []
-  (box :class "island tray"
+  (box :class "tray"
     (systray :spacing 10 :icon-size 16 :prepend-new true)))
 
 ;; ───────────────────────────── the bar ──────────────────────────────
@@ -84,7 +102,9 @@
   :geometry (geometry :x "0" :y "0" :width "100%" :height "40px" :anchor "top center")
   (centerbox :class "bar"
     (box :class "sec left" :halign "start" :space-evenly false :spacing 8
-      (workspaces))
+      (launcher)
+      (workspaces)
+      (media))
     (box :class "sec center" :halign "center" :space-evenly false
       (window))
     (box :class "sec right" :halign "end" :space-evenly false :spacing 8

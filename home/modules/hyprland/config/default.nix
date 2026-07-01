@@ -132,6 +132,8 @@ with lib;
             bind = ${modifier}SHIFT,F,togglefloating,
             bind = ${modifier}SHIFT,I,layoutmsg,togglesplit
             bind = ${modifier}CTRL,l,exec,screenlock
+            bind = ${modifier},slash,exec,eww open --toggle cheatsheet
+            bind = ${modifier},grave,exec,eww open --toggle controlcenter
 
             # workspace movement
             bind = ${modifier}SHIFT,left,movewindow,l

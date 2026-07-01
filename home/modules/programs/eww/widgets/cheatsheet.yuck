@@ -1,0 +1,42 @@
+;; ─────────────────────────── keybind cheatsheet (popup) ───────────────────────────
+;; Mirrors home/modules/hyprland/config/default.nix (modifier = ALT).
+
+(defwidget keyrow [combo action]
+  (box :class "cs-row" :space-evenly false :spacing 10
+    (label :class "cs-key" :halign "start" :text combo)
+    (label :class "cs-act" :halign "end" :hexpand true :text action)))
+
+(defwidget cs-section [title]
+  (label :class "cs-section" :halign "start" :text title))
+
+(defwidget cheatsheet []
+  (box :class "cs-root" :orientation "v" :space-evenly false :spacing 6
+    (label :class "cs-heading" :text "󰌌  Keybindings")
+    (box :space-evenly false :spacing 24
+      (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
+        (cs-section :title "Apps & session")
+        (keyrow :combo "Alt + Return"        :action "Terminal")
+        (keyrow :combo "Alt + Shift + Return" :action "App launcher")
+        (keyrow :combo "Alt + Q"             :action "Close window")
+        (keyrow :combo "Alt + Ctrl + L"      :action "Lock screen")
+        (keyrow :combo "Alt + Shift + C"     :action "Exit Hyprland")
+        (cs-section :title "Layout")
+        (keyrow :combo "Alt + Shift + F"     :action "Toggle floating")
+        (keyrow :combo "Alt + Shift + I"     :action "Toggle split")
+        (keyrow :combo "Alt + Tab"           :action "Cycle windows"))
+      (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
+        (cs-section :title "Focus")
+        (keyrow :combo "Alt + H / J / K / L" :action "Move focus")
+        (cs-section :title "Move window")
+        (keyrow :combo "Alt + Shift + H/J/K/L" :action "Move window")
+        (keyrow :combo "Alt + Shift + Arrows"  :action "Move window")
+        (cs-section :title "Workspaces")
+        (keyrow :combo "Alt + 1 … 0"         :action "Switch workspace")
+        (keyrow :combo "Alt + Shift + 1 … 0" :action "Send to workspace")
+        (cs-section :title "Widgets")
+        (keyrow :combo "Alt + /"             :action "This cheatsheet")))))
+
+(defwindow cheatsheet
+  :monitor 0 :stacking "fg"
+  :geometry (geometry :anchor "center")
+  (box :class "popup cs-popup" (cheatsheet)))
