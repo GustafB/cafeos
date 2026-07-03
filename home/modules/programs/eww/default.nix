@@ -21,6 +21,7 @@ let
     "nightlight.sh"
     "gamemode.sh"
     "mediacontrol.sh"
+    "notifications.sh"
   ];
   widgets = [
     "controlcenter.yuck"
@@ -175,39 +176,110 @@ in
       .media-ico { color: ${c.base0E}; }
       .media-title { color: ${c.base05}; font-style: italic; }
 
-      /* control center */
-      .cc-root { padding: 2px; }
+      /* control center - surface-dots "hub" style card panel */
+      .cc-root {
+        background-color: ${c.base00};
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 12px;
+      }
       .cc-card {
         background-color: ${c.base01};
+        border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 14px;
-        padding: 14px;
+        padding: 12px;
       }
+
+      /* header */
       .cc-avatar {
         background-color: ${c.base0D};
-        border-radius: 50%;
-        min-width: 52px;
-        min-height: 52px;
+        border-radius: 12px;
+        min-width: 40px;
+        min-height: 40px;
       }
-      .cc-avatar-ico { color: ${c.base00}; font-size: 26px; }
+      .cc-avatar-ico { color: ${c.base00}; font-size: 22px; }
       .cc-user { color: ${c.base05}; font-size: 15px; font-weight: bold; }
       .cc-host { color: ${c.base04}; font-size: 12px; }
-      .cc-uptime { color: ${c.base03}; font-size: 11px; margin-top: 3px; }
-      .cc-side { color: ${c.base05}; font-size: 17px; padding: 4px 8px; border-radius: 8px; }
-      .cc-side:hover { background-color: ${c.base02}; color: ${c.base08}; }
 
-      .cc-toggle {
+      /* small round header buttons */
+      .cc-mini {
         background-color: ${c.base02};
-        color: ${c.base04};
-        border-radius: 50%;
-        min-width: 46px;
-        min-height: 46px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        min-width: 30px;
+        min-height: 30px;
       }
-      .cc-toggle.active { background-color: ${c.base0D}; color: ${c.base00}; }
-      .cc-toggle:hover { background-color: ${c.base03}; }
-      .cc-toggle.active:hover { background-color: ${c.base0C}; }
-      .cc-toggle-ico { font-size: 18px; }
-      .cc-tile-label { color: ${c.base04}; font-size: 10px; }
+      .cc-mini:hover { background-color: ${c.base03}; }
+      .cc-mini.active { background-color: ${c.base0D}; }
+      .cc-mini.active .cc-mini-ico { color: ${c.base00}; }
+      .cc-mini-ico { color: ${c.base05}; font-size: 14px; }
+      .cc-mini-power:hover, .cc-mini-power.open { background-color: ${c.base08}; }
+      .cc-mini-power:hover .cc-mini-ico,
+      .cc-mini-power.open .cc-mini-ico { color: ${c.base00}; }
 
+      /* expandable power menu */
+      .cc-power-menu { margin-top: 12px; }
+      .cc-uptime { color: ${c.base04}; font-size: 11px; margin-bottom: 2px; }
+      .cc-pow {
+        background-color: ${c.base02};
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 10px 0;
+      }
+      .cc-pow:hover { background-color: ${c.base03}; border-color: ${c.base0D}; }
+      .cc-pow:hover .cc-pow-ico { color: ${c.base0D}; }
+      .cc-pow.danger:hover { border-color: ${c.base08}; }
+      .cc-pow.danger:hover .cc-pow-ico { color: ${c.base08}; }
+      .cc-pow-ico { color: ${c.base05}; font-size: 18px; }
+      .cc-pow-label { color: ${c.base04}; font-size: 10px; }
+
+      /* quick toggle pills */
+      .cc-quick { min-width: 195px; }
+      .cc-pill {
+        background-color: ${c.base02};
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 8px 10px;
+      }
+      .cc-pill:hover { background-color: ${c.base03}; }
+      .cc-pill.active { background-color: ${c.base0D}; }
+      .cc-pill.active .cc-pill-ico,
+      .cc-pill.active .cc-pill-label { color: ${c.base00}; }
+      .cc-pill-ico { color: ${c.base05}; font-size: 15px; }
+      .cc-pill-label { color: ${c.base04}; font-size: 11px; }
+
+      /* chunky vertical sliders */
+      .cc-vslider trough {
+        background-color: ${c.base02};
+        border-radius: 12px;
+        min-width: 38px;
+        min-height: 140px;
+      }
+      .cc-vslider highlight { background-color: ${c.base0D}; border-radius: 12px; }
+      .cc-vslider slider {
+        background-color: transparent;
+        min-width: 0;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+      }
+      .cc-vslider-ico { color: ${c.base04}; font-size: 14px; }
+
+      /* game/caffeine chips */
+      .cc-chip {
+        background-color: ${c.base02};
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        padding: 6px 12px;
+      }
+      .cc-chip:hover { background-color: ${c.base03}; }
+      .cc-chip.active { background-color: ${c.base0D}; }
+      .cc-chip.active .cc-chip-ico,
+      .cc-chip.active .cc-chip-label { color: ${c.base00}; }
+      .cc-chip-ico { color: ${c.base05}; font-size: 13px; }
+      .cc-chip-label { color: ${c.base04}; font-size: 11px; }
+
+      /* system stats rings */
       .cc-cring { background-color: ${c.base02}; color: ${c.base03}; }
       .cc-cring.cpu  { color: ${c.base0B}; }
       .cc-cring.ram  { color: ${c.base0D}; }
@@ -215,6 +287,18 @@ in
       .cc-cring-inner { min-width: 42px; min-height: 42px; }
       .cc-cring-ico { color: ${c.base05}; font-size: 15px; }
       .cc-cring-val { color: ${c.base04}; font-size: 11px; }
+
+      /* notifications */
+      .cc-notif-title { color: ${c.base05}; font-size: 13px; font-weight: bold; }
+      .cc-notif {
+        background-color: ${c.base02};
+        border-radius: 10px;
+        padding: 8px 10px;
+      }
+      .cc-notif-app { color: ${c.base0D}; font-size: 10px; font-weight: bold; }
+      .cc-notif-summary { color: ${c.base05}; font-size: 12px; font-weight: bold; }
+      .cc-notif-body { color: ${c.base04}; font-size: 11px; }
+      .cc-notif-empty { color: ${c.base03}; font-size: 12px; padding: 8px 0; }
 
       /* music player */
       .mc-root { padding: 4px; }

@@ -15,7 +15,7 @@
       margin = "12";
       width = 340;
       height = 140;
-      icon-size = 48;
+      max-icon-size = 48;
     };
   };
 }

@@ -1,5 +1,7 @@
 ;; control center (popup)
-;; Modeled on gh0stzk's "launchermenu", adapted for hyprland/NixOS.
+;; Modeled on surface-dots' quickshell "hub": a panel of stacked rounded
+;; cards - header w/ expandable power menu, media, calendar + quick
+;; toggles/sliders, system stats, notifications.
 
 ;; profile
 (defpoll cc-user :interval "1h" :initial "user" "whoami")
@@ -16,47 +18,104 @@
 (defpoll game-on  :interval "2s" :initial "false" "bash scripts/gamemode.sh --state")
 (defpoll idle-on  :interval "3s" :initial "true" "pgrep -x hypridle >/dev/null 2>&1 && echo true || echo false")
 
-;; a single round quick-toggle tile
-(defwidget cc-tile [icon label active onclick ?tooltip]
-  (box :orientation "v" :space-evenly false :spacing 4 :class "cc-tile"
-    (eventbox :cursor "pointer"
-      (button :class {active ? "cc-toggle active" : "cc-toggle"}
-              :onclick onclick :tooltip {tooltip ?: label}
-        (label :class "cc-toggle-ico" :text icon)))
-    (label :class "cc-tile-label" :limit-width 12 :text label)))
+;; notifications (mako)
+(defpoll cc-notifs :interval "3s" :initial "[]" "bash scripts/notifications.sh --list")
+(defpoll cc-dnd    :interval "3s" :initial "false" "bash scripts/notifications.sh --dnd-state")
+
+;; power menu expansion state
+(defvar cc-power false)
+
+;; ---- header ---------------------------------------------------------------
+
+(defwidget cc-mini [icon tooltip onclick ?class]
+  (eventbox :cursor "pointer"
+    (button :class "cc-mini ${class}" :tooltip tooltip :onclick onclick
+      (label :class "cc-mini-ico" :text icon))))
+
+(defwidget cc-power-btn [icon label action ?danger]
+  (eventbox :cursor "pointer"
+    (button :class {danger == "true" ? "cc-pow danger" : "cc-pow"}
+            :onclick "eww update cc-power=false & eww close controlcenter & ${action}"
+      (box :orientation "v" :space-evenly false :spacing 3
+        (label :class "cc-pow-ico" :text icon)
+        (label :class "cc-pow-label" :text label)))))
 
 (defwidget cc-header []
-  (box :class "cc-card cc-header" :space-evenly false :spacing 14
-    (box :class "cc-avatar" :halign "center" :valign "center"
-      (label :class "cc-avatar-ico" :text "󱄅"))
-    (box :orientation "v" :space-evenly false :valign "center" :hexpand true
-      (label :class "cc-user" :halign "start" :text cc-user)
-      (label :class "cc-host" :halign "start" :text "@${cc-host}")
-      (label :class "cc-uptime" :halign "start" :text {cc-uptime != "" ? "󰅐 ${cc-uptime}" : ""}))
-    (box :orientation "v" :space-evenly false :spacing 8 :valign "center"
-      (eventbox :cursor "pointer"
-        (button :class "cc-side" :tooltip "Lock" :onclick "eww close controlcenter & screenlock" "󱅞"))
-      (eventbox :cursor "pointer"
-        (button :class "cc-side" :tooltip "Exit Hyprland" :onclick "hyprctl dispatch exit" "󰍃")))))
+  (box :class "cc-card cc-header" :orientation "v" :space-evenly false
+    (box :space-evenly false :spacing 12
+      (box :class "cc-avatar" :halign "center" :valign "center"
+        (label :class "cc-avatar-ico" :text "󱄅"))
+      (box :orientation "v" :space-evenly false :valign "center" :hexpand true
+        (label :class "cc-user" :halign "start" :text cc-user)
+        (label :class "cc-host" :halign "start" :text "@${cc-host}"))
+      (box :space-evenly false :spacing 7 :valign "center"
+        (cc-mini :icon "󰄀" :tooltip "Screenshot"
+                 :onclick "eww close controlcenter & screenshot")
+        (cc-mini :icon "󱅞" :tooltip "Lock"
+                 :onclick "eww close controlcenter & screenlock")
+        (cc-mini :icon {cc-power ? "󰅃" : "󰐥"} :tooltip "Power menu"
+                 :class {cc-power ? "cc-mini-power open" : "cc-mini-power"}
+                 :onclick "eww update cc-power=${!cc-power}")))
+    (revealer :reveal cc-power :transition "slidedown" :duration "250ms"
+      (box :orientation "v" :space-evenly false :spacing 10 :class "cc-power-menu"
+        (label :class "cc-uptime" :halign "center"
+               :text {cc-uptime != "" ? "󰅐  up ${cc-uptime}" : ""})
+        (box :space-evenly true :spacing 8
+          (cc-power-btn :icon "󱅞" :label "Lock"    :action "screenlock")
+          (cc-power-btn :icon "󰤄" :label "Suspend" :action "systemctl suspend")
+          (cc-power-btn :icon "󰍃" :label "Logout"  :action "hyprctl dispatch exit"))
+        (box :space-evenly true :spacing 8
+          (cc-power-btn :icon "󰋊" :label "Hibernate" :action "systemctl hibernate")
+          (cc-power-btn :icon "󰜉" :label "Reboot"    :action "systemctl reboot"   :danger "true")
+          (cc-power-btn :icon "󰐥" :label "Shutdown"  :action "systemctl poweroff" :danger "true"))))))
 
-(defwidget cc-toggles []
-  (box :class "cc-card" :orientation "v" :space-evenly false :spacing 10
-    (box :space-evenly true :spacing 8
-      (cc-tile :icon wifi-icon :label wifi-name :active {wifi-name != "Off" && wifi-name != "…"}
-               :tooltip "Network manager"
-               :onclick "eww close controlcenter & network-menu")
-      (cc-tile :icon bt-icon :label bt-name :active bt-on
-               :onclick "bash scripts/bluetooth.sh --toggle")
-      (cc-tile :icon air-icon :label "Airplane" :active air-on
-               :onclick "bash scripts/airplane.sh --toggle"))
-    (box :space-evenly true :spacing 8
-      (cc-tile :icon {night-on ? "󰛨" : "󰃝"} :label "Night" :active night-on
-               :onclick "bash scripts/nightlight.sh --toggle")
-      (cc-tile :icon "󰺵" :label "Game" :active game-on
-               :onclick "bash scripts/gamemode.sh --toggle")
-      (cc-tile :icon {idle-on ? "󰒲" : "󰅶"} :label {idle-on ? "Idle on" : "Caffeine"} :active idle-on
-               :tooltip "Toggle hypridle (auto-lock/sleep)"
-               :onclick "pgrep -x hypridle >/dev/null 2>&1 && pkill -x hypridle || (hypridle & disown)"))))
+;; ---- media ----------------------------------------------------------------
+
+(defwidget cc-media []
+  (box :class "cc-card" :visible {mc-player != "None"}
+    (player)))
+
+;; ---- calendar + quick toggles/sliders -------------------------------------
+
+(defwidget cc-pill [icon label active onclick ?tooltip ?onrightclick]
+  (eventbox :cursor "pointer" :onrightclick {onrightclick ?: ""}
+    (button :class {active ? "cc-pill active" : "cc-pill"}
+            :onclick onclick :tooltip {tooltip ?: label} :vexpand true
+      (box :space-evenly false :spacing 8
+        (label :class "cc-pill-ico" :text icon)
+        (label :class "cc-pill-label" :limit-width 9 :show-truncated true :text label)))))
+
+(defwidget cc-vslider [value onchange icon tooltip ?visible]
+  (box :orientation "v" :space-evenly false :spacing 6 :visible {visible ?: true}
+    (scale :class "cc-vslider" :orientation "v" :flipped true :vexpand true
+           :value value :min 0 :max 101 :tooltip tooltip :onchange onchange)
+    (label :class "cc-vslider-ico" :text icon)))
+
+(defwidget cc-quickrow []
+  (box :space-evenly false :spacing 10 :class "cc-row"
+    (box :class "cc-card cc-cal" :hexpand true
+      (calendar :class "cal" :show-week-numbers false
+                :day cal-day :month cal-month :year cal-year))
+    (box :class "cc-card cc-quick" :space-evenly false :spacing 10
+      (box :orientation "v" :space-evenly true :spacing 8 :hexpand true
+        (cc-pill :icon wifi-icon :label {wifi-name == "Disconnected" ? "Wifi" : wifi-name}
+                 :active {wifi-name != "Disconnected" && wifi-name != "…"}
+                 :tooltip "Wifi (right-click: networks)"
+                 :onclick "bash scripts/wifi.sh toggle"
+                 :onrightclick "eww close controlcenter & network-menu")
+        (cc-pill :icon bt-icon :label bt-name :active bt-on
+                 :onclick "bash scripts/bluetooth.sh --toggle")
+        (cc-pill :icon air-icon :label "Airplane" :active air-on
+                 :onclick "bash scripts/airplane.sh --toggle")
+        (cc-pill :icon {night-on ? "󰛨" : "󰃝"} :label "Night" :active night-on
+                 :onclick "bash scripts/nightlight.sh --toggle"))
+      (cc-vslider :value bright :icon "󰃟" :tooltip "Brightness"
+                  :visible {bright >= 0}
+                  :onchange "bash scripts/brightness.sh set {}")
+      (cc-vslider :value vol :icon vol-icon :tooltip "Volume"
+                  :onchange "bash scripts/volume.sh set {}"))))
+
+;; ---- system stats + extra toggles ------------------------------------------
 
 (defwidget cc-ring [icon value css label]
   (box :orientation "v" :space-evenly false :spacing 4 :halign "center"
@@ -66,19 +125,66 @@
         (label :class "cc-cring-ico" :text icon)))
     (label :class "cc-cring-val" :text "${value}%")))
 
+(defwidget cc-chip [icon label active onclick ?tooltip]
+  (eventbox :cursor "pointer"
+    (button :class {active ? "cc-chip active" : "cc-chip"}
+            :onclick onclick :tooltip {tooltip ?: label}
+      (box :space-evenly false :spacing 6
+        (label :class "cc-chip-ico" :text icon)
+        (label :class "cc-chip-label" :text label)))))
+
 (defwidget cc-system []
-  (box :class "cc-card" :space-evenly true :spacing 6
-    (cc-ring :icon "󰻠" :css "cpu"  :label "CPU"  :value {round(EWW_CPU.avg, 0)})
-    (cc-ring :icon "󰍛" :css "ram"  :label "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)})
-    (cc-ring :icon "󰋊" :css "disk" :label "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
+  (box :class "cc-card" :space-evenly false :spacing 6
+    (box :space-evenly true :spacing 6 :hexpand true
+      (cc-ring :icon "󰻠" :css "cpu"  :label "CPU"  :value {round(EWW_CPU.avg, 0)})
+      (cc-ring :icon "󰍛" :css "ram"  :label "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)})
+      (cc-ring :icon "󰋊" :css "disk" :label "Disk" :value {round(EWW_DISK["/"].used_perc, 0)}))
+    (box :orientation "v" :space-evenly true :spacing 8 :valign "center"
+      (cc-chip :icon "󰺵" :label "Game" :active game-on
+               :onclick "bash scripts/gamemode.sh --toggle")
+      (cc-chip :icon {idle-on ? "󰒲" : "󰅶"} :label {idle-on ? "Idle" : "Awake"} :active {!idle-on}
+               :tooltip "Toggle hypridle (auto-lock/sleep)"
+               :onclick "pgrep -x hypridle >/dev/null 2>&1 && pkill -x hypridle || (hypridle & disown)"))))
+
+;; ---- notifications ----------------------------------------------------------
+
+(defwidget cc-notifs []
+  (box :class "cc-card" :orientation "v" :space-evenly false :spacing 8
+    (box :space-evenly false :spacing 8
+      (label :class "cc-notif-title" :halign "start" :hexpand true :text "Notifications")
+      (eventbox :cursor "pointer"
+        (button :class {cc-dnd ? "cc-mini active" : "cc-mini"}
+                :tooltip {cc-dnd ? "Do not disturb: on" : "Do not disturb: off"}
+                :onclick "bash scripts/notifications.sh --dnd-toggle"
+          (label :class "cc-mini-ico" :text {cc-dnd ? "󰂛" : "󰂚"})))
+      (eventbox :cursor "pointer"
+        (button :class "cc-mini" :tooltip "Clear history"
+                :onclick "bash scripts/notifications.sh --clear"
+          (label :class "cc-mini-ico" :text "󰎟"))))
+    (box :orientation "v" :space-evenly false :spacing 6
+         :visible {arraylength(cc-notifs) > 0}
+      (for n in cc-notifs
+        (box :class "cc-notif" :orientation "v" :space-evenly false :spacing 2
+          (box :space-evenly false :spacing 6
+            (label :class "cc-notif-app" :halign "start" :text {n.app})
+            (label :class "cc-notif-summary" :halign "start" :hexpand true
+                   :limit-width 32 :show-truncated true :text {n.summary}))
+          (label :class "cc-notif-body" :halign "start" :visible {n.body != ""}
+                 :limit-width 46 :show-truncated true :text {n.body}))))
+    (label :class "cc-notif-empty" :halign "center"
+           :visible {arraylength(cc-notifs) == 0} :text "All caught up 󰂚")))
+
+;; ---- panel ------------------------------------------------------------------
 
 (defwidget controlcenter []
   (box :class "cc-root" :orientation "v" :space-evenly false :spacing 10
     (cc-header)
-    (cc-toggles)
-    (cc-system)))
+    (cc-media)
+    (cc-quickrow)
+    (cc-system)
+    (cc-notifs)))
 
 (defwindow controlcenter
   :monitor 0 :stacking "fg"
-  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "340px")
+  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "420px")
   (controlcenter))

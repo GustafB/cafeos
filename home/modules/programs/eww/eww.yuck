@@ -49,7 +49,7 @@
     (metric :icon "󰋊" :css "disk" :tip "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
 
 (defwidget launcher []
-  (eventbox :onclick "eww open --toggle controlcenter" :cursor "pointer"
+  (eventbox :onclick "eww update cc-power=false & eww open --toggle controlcenter" :cursor "pointer"
     (box :class "island launcher"
       (label :class "launcher-ico" :text "󱄅"))))
 
@@ -111,7 +111,7 @@
   :geometry (geometry :y "8px" :x "16px" :anchor "top right")
   (box :class "popup cal-popup"
     (calendar :class "cal" :show-week-numbers false
-              :day cal-day :month {cal-month - 1} :year cal-year)))
+              :day cal-day :month cal-month :year cal-year)))
 
 (defwindow audio
   :monitor 0 :stacking "fg"
