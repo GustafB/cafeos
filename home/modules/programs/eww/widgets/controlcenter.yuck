@@ -1,4 +1,4 @@
-;; ─────────────────────── control center (popup) ───────────────────────
+;; control center (popup)
 ;; Modeled on gh0stzk's "launchermenu", adapted for hyprland/NixOS.
 
 ;; profile
@@ -43,8 +43,8 @@
   (box :class "cc-card" :orientation "v" :space-evenly false :spacing 10
     (box :space-evenly true :spacing 8
       (cc-tile :icon wifi-icon :label wifi-name :active {wifi-name != "Off" && wifi-name != "…"}
-               :tooltip "Wi-Fi selector"
-               :onclick "eww close controlcenter & eww open --toggle wifi")
+               :tooltip "Network manager"
+               :onclick "eww close controlcenter & network-menu")
       (cc-tile :icon bt-icon :label bt-name :active bt-on
                :onclick "bash scripts/bluetooth.sh --toggle")
       (cc-tile :icon air-icon :label "Airplane" :active air-on
@@ -62,7 +62,8 @@
   (box :orientation "v" :space-evenly false :spacing 4 :halign "center"
     (circular-progress :class "cc-cring ${css}" :value value :thickness 6
                        :start-at 75 :tooltip "${label} ${value}%"
-      (label :class "cc-cring-ico" :text icon))
+      (box :class "cc-cring-inner" :halign "center" :valign "center"
+        (label :class "cc-cring-ico" :text icon)))
     (label :class "cc-cring-val" :text "${value}%")))
 
 (defwidget cc-system []

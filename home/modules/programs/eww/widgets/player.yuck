@@ -1,4 +1,4 @@
-;; ─────────────────────────── music player (popup) ───────────────────────────
+;; music player (popup)
 ;; playerctl (MPRIS) wrapper. Modeled on gh0stzk's player, MPRIS-only.
 
 (defpoll mc-player  :interval "2s" :initial "None"    "bash scripts/mediacontrol.sh --player")

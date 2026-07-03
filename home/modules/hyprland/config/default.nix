@@ -55,6 +55,7 @@ with lib;
           env = SDL_VIDEODRIVER, wayland
           exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
           exec-once = eww daemon && eww open bar
+          exec-once = wl-paste --watch cliphist store
           exec-once = lxqt-policykit-agent
           exec-once = 1password --silent
           exec-once = hypridle
@@ -135,6 +136,13 @@ with lib;
             bind = ${modifier}CTRL,l,exec,screenlock
             bind = ${modifier},slash,exec,eww open --toggle cheatsheet
             bind = ${modifier},grave,exec,eww open --toggle controlcenter
+
+            # applets (rofi)
+            bind = ${modifier},D,exec,appswitcher
+            bind = ${modifier},V,exec,clipmenu
+            bind = ${modifier}SHIFT,E,exec,powermenu
+            bind = ${modifier}SHIFT,N,exec,network-menu
+            bind = ,Print,exec,screenshot
 
             # workspace movement
             bind = ${modifier}SHIFT,left,movewindow,l

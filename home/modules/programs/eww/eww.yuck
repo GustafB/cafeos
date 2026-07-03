@@ -1,15 +1,8 @@
-;; ╔══════════════════════════════════════════════════════════╗
-;; ║  cafeos — eww top bar (floating islands, Tokyo Night)     ║
-;; ║  Colours come from eww.scss, generated from the stylix    ║
-;; ║  palette; this file is layout + behaviour only.           ║
-;; ╚══════════════════════════════════════════════════════════╝
-
-;; popup widgets live in their own files
+;; cafeos eww top bar. Layout + behaviour; colours are in eww.scss.
 (include "widgets/controlcenter.yuck")
 (include "widgets/player.yuck")
 (include "widgets/cheatsheet.yuck")
 
-;; ─────────────────────────── data sources ───────────────────────────
 (deflisten workspaces  :initial "[]"    "bash scripts/workspaces.sh")
 (deflisten cur-window  :initial ""       "bash scripts/window.sh")
 
@@ -24,49 +17,46 @@
 (defpoll battery   :interval "10s" :initial "{\"capacity\":0,\"status\":\"None\",\"icon\":\"󰂑\"}" "bash scripts/battery.sh")
 (defpoll wifi-name :interval "10s" :initial "…"    "bash scripts/wifi.sh status")
 (defpoll wifi-icon :interval "10s" :initial "󰤨"    "bash scripts/wifi.sh icon")
-(defpoll wifi-list :interval "15s" :initial "[]"  "bash scripts/wifi.sh list")
 
-;; popup-local state for the wi-fi connect flow
-(defvar wifi-selected "")
-(defvar wifi-pass "")
-
-;; ──────────────────────────── modules ───────────────────────────────
+;; modules
 (defwidget workspaces []
   (box :class "island ws" :space-evenly false :spacing 4
     (for ws in workspaces
-      (button :class {ws.active ? "ws-btn active" : ws.occupied ? "ws-btn occupied" : "ws-btn"}
-              :onclick "hyprctl dispatch workspace ${ws.id}"
-        (label :text {ws.active ? "◉" : "○"})))))
+      (eventbox :onclick "hyprctl dispatch workspace ${ws.id}" :cursor "pointer"
+        (label :class {ws.active ? "ws-btn active" : ws.occupied ? "ws-btn occupied" : "ws-btn"}
+               :text {ws.active ? "◉" : "○"})))))
 
 (defwidget window []
   (box :class "island window" :visible {cur-window != ""}
     (label :class "win-title" :text cur-window :limit-width 55 :show-truncated true)))
 
 (defwidget clock []
-  (button :class "island clock" :onclick "eww open --toggle cal"
-    (box :space-evenly false :spacing 8
+  (eventbox :onclick "eww open --toggle cal" :cursor "pointer"
+    (box :class "island clock" :space-evenly false :spacing 8
       (label :class "ico" :text "󰥔")
       (label :text clock-time))))
 
-(defwidget ring [icon value css tip]
-  (circular-progress :class "ring ${css}" :value value :thickness 3
-                     :start-at 75 :tooltip "${tip} ${value}%"
-    (label :class "ring-ico" :text icon)))
+;; text metrics, not rings: circular-progress won't size up in a thin centerbox bar
+(defwidget metric [icon value css tip]
+  (box :class "metric" :space-evenly false :spacing 4 :tooltip "${tip} ${value}%"
+    (label :class "ico metric-ico ${css}" :text icon)
+    (label :class "metric-val" :text "${value}%")))
 
 (defwidget resources []
-  (box :class "island resources" :space-evenly false :spacing 10
-    (ring :icon "󰻠" :css "cpu"  :tip "CPU"  :value {round(EWW_CPU.avg, 0)})
-    (ring :icon "󰍛" :css "ram"  :tip "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)})
-    (ring :icon "󰋊" :css "disk" :tip "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
+  (box :class "island resources" :space-evenly false :spacing 12
+    (metric :icon "󰻠" :css "cpu"  :tip "CPU"  :value {round(EWW_CPU.avg, 0)})
+    (metric :icon "󰍛" :css "ram"  :tip "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)})
+    (metric :icon "󰋊" :css "disk" :tip "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
 
 (defwidget launcher []
-  (button :class "island launcher" :onclick "eww open --toggle controlcenter"
-    (label :class "launcher-ico" :text "󱄅")))
+  (eventbox :onclick "eww open --toggle controlcenter" :cursor "pointer"
+    (box :class "island launcher"
+      (label :class "launcher-ico" :text "󱄅"))))
 
 (defwidget media []
-  (button :class "island media" :onclick "eww open --toggle player"
-          :visible {mc-player != "None"}
-    (box :space-evenly false :spacing 6
+  (eventbox :onclick "eww open --toggle player" :cursor "pointer"
+            :visible {mc-player != "None"}
+    (box :class "island media" :space-evenly false :spacing 6
       (label :class "ico media-ico" :text {mc-status == "Playing" ? "󰝚" : "󰎈"})
       (label :class "media-title" :limit-width 18 :show-truncated true
              :text {mc-title != "" ? mc-title : "Music"}))))
@@ -79,14 +69,14 @@
 
 (defwidget volume []
   (eventbox :onscroll "bash scripts/volume.sh scroll {}"
-    (button :class "island vol" :onclick "eww open --toggle audio"
-      (box :space-evenly false :spacing 6
-        (label :class "ico vol-ico" :text vol-icon)
-        (label :text "${vol}%")))))
+            :onclick "eww open --toggle audio" :cursor "pointer"
+    (box :class "island vol" :space-evenly false :spacing 6
+      (label :class "ico vol-ico" :text vol-icon)
+      (label :text "${vol}%"))))
 
 (defwidget net []
-  (button :class "island net" :onclick "eww open --toggle wifi"
-    (box :space-evenly false :spacing 6
+  (eventbox :onclick "network-menu &" :cursor "pointer"
+    (box :class "island net" :space-evenly false :spacing 6
       (label :class "ico net-ico" :text wifi-icon)
       (label :text wifi-name :limit-width 14 :show-truncated true))))
 
@@ -94,7 +84,7 @@
   (box :class "tray"
     (systray :spacing 10 :icon-size 16 :prepend-new true)))
 
-;; ───────────────────────────── the bar ──────────────────────────────
+;; the bar
 (defwindow bar
   :monitor 0
   :stacking "fg"
@@ -115,7 +105,7 @@
       (resources)
       (clock))))
 
-;; ──────────────────────────── popups ────────────────────────────────
+;; popups
 (defwindow cal
   :monitor 0 :stacking "fg"
   :geometry (geometry :y "8px" :x "16px" :anchor "top right")
@@ -138,32 +128,3 @@
       (label :class "ico" :text "󰃟")
       (scale :class "slider br-scale" :hexpand true :value bright :min 0 :max 100
              :onchange "bash scripts/brightness.sh set {}"))))
-
-(defwindow wifi
-  :monitor 0 :stacking "fg"
-  :geometry (geometry :y "8px" :x "16px" :anchor "top right" :width "330px")
-  (box :class "popup wifi-popup" :orientation "v" :space-evenly false :spacing 10
-    (box :class "wifi-head" :space-evenly false
-      (label :class "popup-title" :hexpand true :halign "start" :text "Wi-Fi")
-      (button :class "refresh"
-              :onclick "bash scripts/wifi.sh scan >/dev/null 2>&1 &" "󰑐"))
-    (scroll :vscroll true :hscroll false :height 280
-      (box :orientation "v" :space-evenly false :spacing 4
-        (for nw in wifi-list
-          (box :orientation "v" :space-evenly false
-            (button :class {nw.inuse ? "wifi-item active" : "wifi-item"}
-                    :onclick "eww update wifi-pass='' wifi-selected='${nw.ssid}'"
-              (box :space-evenly false :spacing 8
-                (label :class "ico" :text {nw.security != "" ? "󰤪" : "󰤨"})
-                (label :hexpand true :halign "start" :limit-width 20
-                       :show-truncated true :text {nw.ssid})
-                (label :class "sig" :text "${nw.signal}%")))
-            (revealer :transition "slidedown" :duration "150ms"
-                      :reveal {wifi-selected == nw.ssid}
-              (box :class "wifi-connect" :orientation "v" :space-evenly false :spacing 8
-                (input :class "wifi-pass" :password true :value wifi-pass
-                       :onchange "eww update wifi-pass='{}'"
-                       :onaccept "bash scripts/wifi.sh connect '${nw.ssid}' '{}' >/dev/null 2>&1 & eww update wifi-selected='' wifi-pass='' && eww close wifi")
-                (button :class "connect-btn"
-                        :onclick "bash scripts/wifi.sh connect '${nw.ssid}' '${wifi-pass}' >/dev/null 2>&1 & eww update wifi-selected='' wifi-pass='' && eww close wifi"
-                  "Connect")))))))))

@@ -75,9 +75,17 @@ in
 
       .bar { background-color: transparent; padding: 4px 10px; }
 
-      /* floating islands */
+      /* strip GTK button chrome (background-image survives all:unset) */
+      button {
+        background-color: transparent;
+        background-image: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
+      }
+
       .island {
-        background-color: ${c.base01};
+        background-color: ${c.base02};
         color: ${c.base05};
         border-radius: 12px;
         padding: 2px 12px;
@@ -96,10 +104,7 @@ in
       .bat-ico { color: ${c.base0B}; }
       .net-ico { color: ${c.base0C}; }
       .vol-ico { color: ${c.base0E}; }
-      /* no island pill: systray can't report its icon count, so a pill
-         would render as an empty bubble when nothing is docked. */
       .tray { padding: 0 6px; }
-      .tray:empty { padding: 0; }
 
       /* popups */
       .popup {
@@ -157,12 +162,11 @@ in
       }
       .connect-btn:hover { background-color: ${c.base0C}; }
 
-      /* ── bar: circular metrics + launcher + media ── */
-      .ring { font-size: 10px; color: ${c.base02}; margin: 0 1px; }
-      .ring.cpu  { color: ${c.base0B}; }
-      .ring.ram  { color: ${c.base0D}; }
-      .ring.disk { color: ${c.base0E}; }
-      .ring-ico { color: ${c.base05}; font-size: 9px; }
+      .metric-val { color: ${c.base05}; }
+      .metric-ico { font-size: 14px; }
+      .metric-ico.cpu  { color: ${c.base0B}; }
+      .metric-ico.ram  { color: ${c.base0D}; }
+      .metric-ico.disk { color: ${c.base0E}; }
 
       .launcher { padding: 2px 10px; }
       .launcher-ico { color: ${c.base0D}; font-size: 16px; }
@@ -171,7 +175,7 @@ in
       .media-ico { color: ${c.base0E}; }
       .media-title { color: ${c.base05}; font-style: italic; }
 
-      /* ── control center ── */
+      /* control center */
       .cc-root { padding: 2px; }
       .cc-card {
         background-color: ${c.base01};
@@ -204,14 +208,15 @@ in
       .cc-toggle-ico { font-size: 18px; }
       .cc-tile-label { color: ${c.base04}; font-size: 10px; }
 
-      .cc-cring { font-size: 15px; color: ${c.base02}; }
+      .cc-cring { background-color: ${c.base02}; color: ${c.base03}; }
       .cc-cring.cpu  { color: ${c.base0B}; }
       .cc-cring.ram  { color: ${c.base0D}; }
       .cc-cring.disk { color: ${c.base0E}; }
-      .cc-cring-ico { color: ${c.base05}; font-size: 14px; }
+      .cc-cring-inner { min-width: 42px; min-height: 42px; }
+      .cc-cring-ico { color: ${c.base05}; font-size: 15px; }
       .cc-cring-val { color: ${c.base04}; font-size: 11px; }
 
-      /* ── music player ── */
+      /* music player */
       .mc-root { padding: 4px; }
       .mc-art {
         background-color: ${c.base02};
@@ -240,9 +245,9 @@ in
       .mc-sm.active { color: ${c.base0D}; }
       .mc-play { color: ${c.base0D}; font-size: 24px; }
 
-      /* ── cheatsheet ── */
+      /* cheatsheet */
       .cs-popup { padding: 22px 26px; }
-      .cs-root { min-width: 460px; }
+      .cs-root { min-width: 660px; }
       .cs-heading { color: ${c.base0D}; font-size: 16px; font-weight: bold; margin-bottom: 12px; }
       .cs-section { color: ${c.base0E}; font-size: 12px; font-weight: bold; margin: 10px 0 4px 0; }
       .cs-row { padding: 2px 0; }

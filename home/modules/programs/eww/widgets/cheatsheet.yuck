@@ -1,4 +1,4 @@
-;; ─────────────────────────── keybind cheatsheet (popup) ───────────────────────────
+;; keybind cheatsheet (popup)
 ;; Mirrors home/modules/hyprland/config/default.nix (modifier = ALT).
 
 (defwidget keyrow [combo action]
@@ -15,26 +15,35 @@
     (box :space-evenly false :spacing 24
       (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
         (cs-section :title "Apps & session")
-        (keyrow :combo "Alt + Return"        :action "Terminal")
-        (keyrow :combo "Alt + Shift + Return" :action "App launcher")
-        (keyrow :combo "Alt + Q"             :action "Close window")
-        (keyrow :combo "Alt + Ctrl + L"      :action "Lock screen")
-        (keyrow :combo "Alt + Shift + C"     :action "Exit Hyprland")
+        (keyrow :combo "Alt + Return"         :action "Terminal")
+        (keyrow :combo "Alt + Shift + Return"  :action "App launcher")
+        (keyrow :combo "Alt + Q"              :action "Close window")
+        (keyrow :combo "Alt + Ctrl + L"       :action "Lock screen")
+        (keyrow :combo "Alt + Shift + E"      :action "Power menu")
+        (keyrow :combo "Alt + Shift + C"      :action "Exit Hyprland")
         (cs-section :title "Layout")
-        (keyrow :combo "Alt + Shift + F"     :action "Toggle floating")
-        (keyrow :combo "Alt + Shift + I"     :action "Toggle split")
-        (keyrow :combo "Alt + Tab"           :action "Cycle windows"))
+        (keyrow :combo "Alt + Shift + F"      :action "Toggle floating")
+        (keyrow :combo "Alt + Shift + I"      :action "Toggle split")
+        (keyrow :combo "Alt + Tab"            :action "Cycle windows"))
       (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
         (cs-section :title "Focus")
-        (keyrow :combo "Alt + H / J / K / L" :action "Move focus")
+        (keyrow :combo "Alt + H / J / K / L"  :action "Move focus")
         (cs-section :title "Move window")
         (keyrow :combo "Alt + Shift + H/J/K/L" :action "Move window")
         (keyrow :combo "Alt + Shift + Arrows"  :action "Move window")
         (cs-section :title "Workspaces")
-        (keyrow :combo "Alt + 1 … 0"         :action "Switch workspace")
-        (keyrow :combo "Alt + Shift + 1 … 0" :action "Send to workspace")
+        (keyrow :combo "Alt + 1 … 0"          :action "Switch workspace")
+        (keyrow :combo "Alt + Shift + 1 … 0"  :action "Send to workspace"))
+      (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
+        (cs-section :title "Applets")
+        (keyrow :combo "Print"                :action "Screenshot")
+        (keyrow :combo "Alt + D"              :action "Window switcher")
+        (keyrow :combo "Alt + V"              :action "Clipboard history")
+        (keyrow :combo "Alt + Shift + N"      :action "Network manager")
+        (keyrow :combo "Alt + Shift + E"      :action "Power menu")
         (cs-section :title "Widgets")
-        (keyrow :combo "Alt + /"             :action "This cheatsheet")))))
+        (keyrow :combo "Alt + `"              :action "Control center")
+        (keyrow :combo "Alt + /"              :action "This cheatsheet")))))
 
 (defwindow cheatsheet
   :monitor 0 :stacking "fg"

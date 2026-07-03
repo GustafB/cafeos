@@ -11,5 +11,7 @@
     ../programs/kitty.nix
     ../programs/eww
     ../programs/rofi
+    ../programs/applets
+    ../programs/mako.nix
   ];
 }

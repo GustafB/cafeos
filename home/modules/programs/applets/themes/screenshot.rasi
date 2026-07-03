@@ -1,0 +1,95 @@
+// Adapted from gh0stzk/dotfiles Screenshot.rasi — colours via generated shared.rasi
+configuration {
+    hover-select:       true;
+    me-select-entry:    "";
+    me-accept-entry:    "MousePrimary";
+}
+
+@import "shared.rasi"
+
+window {
+    transparency:       "real";
+    location:           center;
+    anchor:             center;
+    width:              620px;
+    border:             2px solid;
+    border-radius:      12px;
+    border-color:       @selected;
+    background-color:   @background;
+}
+
+mainbox {
+    spacing:            12px;
+    padding:            18px;
+    background-color:   transparent;
+    children:           [ "inputbar", "message", "listview" ];
+}
+
+inputbar {
+    spacing:            10px;
+    background-color:   transparent;
+    text-color:         @foreground;
+    children:           [ "textbox-prompt-colon", "prompt" ];
+}
+
+textbox-prompt-colon {
+    expand:             false;
+    str:                "";
+    padding:            10px 17px 10px 12px;
+    border-radius:      8px;
+    background-color:   @active;
+    text-color:         @background;
+}
+
+prompt {
+    padding:            10px;
+    border-radius:      8px;
+    background-color:   @selected;
+    text-color:         @background;
+}
+
+message {
+    padding:            10px;
+    border-radius:      8px;
+    background-color:   @background-alt;
+    text-color:         @foreground;
+}
+
+textbox {
+    background-color:   inherit;
+    text-color:         inherit;
+    vertical-align:     0.5;
+    horizontal-align:   0.0;
+}
+
+listview {
+    columns:            5;
+    lines:              1;
+    cycle:              true;
+    scrollbar:          false;
+    spacing:            10px;
+    background-color:   transparent;
+    cursor:             "default";
+}
+
+element {
+    padding:            22px 22px 22px 10px;
+    border-radius:      10px;
+    background-color:   @background-alt;
+    text-color:         @foreground;
+    cursor:             pointer;
+}
+
+element-text {
+    font:               "JetBrainsMono Nerd Font Bold 20";
+    background-color:   transparent;
+    text-color:         inherit;
+    cursor:             inherit;
+    vertical-align:     0.5;
+    horizontal-align:   0.5;
+}
+
+element selected.normal {
+    background-color:   @selected;
+    text-color:         @background;
+}
