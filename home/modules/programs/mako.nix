@@ -1,12 +1,16 @@
 {
+  lib,
+  config,
   ...
 }:
 {
   # Wayland notification daemon. Colours/fonts come from Stylix's mako target;
-  # this just sets layout/behaviour. Runs as a systemd user service.
+  # this sets layout/behaviour, plus a translucent background override for the
+  # frosted-glass look (blur via hyprland layerrule on the mako namespace).
   services.mako = {
     enable = true;
     settings = {
+      background-color = lib.mkForce "${config.lib.stylix.colors.withHashtag.base00}B3";
       anchor = "top-right";
       default-timeout = 5000;
       border-radius = 12;

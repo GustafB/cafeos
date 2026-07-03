@@ -19,6 +19,9 @@ lib.mkIf vars.gui {
     # Tokyo Night — "Night" variant (background #1a1b26).
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
 
+    # Slight terminal translucency; hyprland blurs behind it (glass look).
+    opacity.terminal = 0.92;
+
     # Stylix expects a wallpaper image; reuse the repo asset. hyprpaper.nix
     # remains the authority on actually painting the wallpaper (see the target
     # disabled in that module) — this just satisfies Stylix's requirement.

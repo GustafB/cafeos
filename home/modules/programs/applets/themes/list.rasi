@@ -12,10 +12,10 @@ window {
     anchor:             center;
     width:              44%;
     height:             46%;
-    border:             2px solid;
+    border:             1px solid;
     border-radius:      12px;
-    border-color:       @selected;
-    background-color:   @background;
+    border-color:       @glass-edge;
+    background-color:   @glass;
     cursor:             "default";
 }
 
@@ -35,7 +35,7 @@ inputbar {
 
 textbox-prompt-colon {
     expand:             false;
-    str:                "";
+    str:                "󰍉";
     padding:            9px 13px;
     border-radius:      8px;
     background-color:   @active;
@@ -91,6 +91,7 @@ element {
     background-color:   transparent;
     text-color:         @foreground;
     cursor:             pointer;
+    children:           [ "element-text" ];
 }
 
 element normal.active {

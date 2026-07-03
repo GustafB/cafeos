@@ -9,6 +9,11 @@ let
   # this bar follows automatically.
   c = config.lib.stylix.colors.withHashtag;
 
+  # rgba() from the palette, for the glass surfaces. Hyprland blurs what's
+  # behind them (layerrule blur on gtk-layer-shell), the alpha lets it show.
+  raw = config.lib.stylix.colors;
+  rgba = base: a: "rgba(${raw."${base}-rgb-r"}, ${raw."${base}-rgb-g"}, ${raw."${base}-rgb-b"}, ${a})";
+
   scripts = [
     "workspaces.sh"
     "window.sh"
@@ -86,7 +91,10 @@ in
       }
 
       .island {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.55"};
+        background-image: linear-gradient(170deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 45%);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
         color: ${c.base05};
         border-radius: 12px;
         padding: 2px 12px;
@@ -109,8 +117,10 @@ in
 
       /* popups */
       .popup {
-        background-color: ${c.base00};
-        border: 2px solid ${c.base02};
+        background-color: ${rgba "base00" "0.65"};
+        background-image: linear-gradient(170deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 50%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
         border-radius: 16px;
         padding: 16px;
         margin: 6px;
@@ -118,7 +128,7 @@ in
       .popup-title { color: ${c.base0D}; font-weight: bold; }
 
       .slider trough {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border-radius: 12px;
         min-height: 8px;
         min-width: 150px;
@@ -178,14 +188,20 @@ in
 
       /* control center - surface-dots "hub" style card panel */
       .cc-root {
-        background-color: ${c.base00};
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background-color: ${rgba "base00" "0.55"};
+        background-image: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 55%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
         border-radius: 18px;
         padding: 12px;
+        /* transparent gutter so the drop shadow isn't clipped at the window edge */
+        margin: 2px 12px 30px 12px;
       }
       .cc-card {
-        background-color: ${c.base01};
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: ${rgba "base01" "0.45"};
+        background-image: linear-gradient(170deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 40%);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
         border-radius: 14px;
         padding: 12px;
       }
@@ -193,6 +209,8 @@ in
       /* header */
       .cc-avatar {
         background-color: ${c.base0D};
+        background-image: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 60%);
+        box-shadow: 0 3px 12px ${rgba "base0D" "0.4"};
         border-radius: 12px;
         min-width: 40px;
         min-height: 40px;
@@ -203,14 +221,18 @@ in
 
       /* small round header buttons */
       .cc-mini {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border: 1px solid rgba(255, 255, 255, 0.06);
         border-radius: 10px;
         min-width: 30px;
         min-height: 30px;
       }
-      .cc-mini:hover { background-color: ${c.base03}; }
-      .cc-mini.active { background-color: ${c.base0D}; }
+      .cc-mini:hover { background-color: ${rgba "base03" "0.75"}; }
+      .cc-mini.active {
+        background-color: ${c.base0D};
+        background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 60%);
+        box-shadow: 0 2px 8px ${rgba "base0D" "0.4"};
+      }
       .cc-mini.active .cc-mini-ico { color: ${c.base00}; }
       .cc-mini-ico { color: ${c.base05}; font-size: 14px; }
       .cc-mini-power:hover, .cc-mini-power.open { background-color: ${c.base08}; }
@@ -221,14 +243,18 @@ in
       .cc-power-menu { margin-top: 12px; }
       .cc-uptime { color: ${c.base04}; font-size: 11px; margin-bottom: 2px; }
       .cc-pow {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border: 1px solid transparent;
         border-radius: 12px;
         padding: 10px 0;
       }
-      .cc-pow:hover { background-color: ${c.base03}; border-color: ${c.base0D}; }
+      .cc-pow:hover {
+        background-color: ${rgba "base03" "0.75"};
+        border-color: ${c.base0D};
+        box-shadow: 0 2px 10px ${rgba "base0D" "0.3"};
+      }
       .cc-pow:hover .cc-pow-ico { color: ${c.base0D}; }
-      .cc-pow.danger:hover { border-color: ${c.base08}; }
+      .cc-pow.danger:hover { border-color: ${c.base08}; box-shadow: 0 2px 10px ${rgba "base08" "0.35"}; }
       .cc-pow.danger:hover .cc-pow-ico { color: ${c.base08}; }
       .cc-pow-ico { color: ${c.base05}; font-size: 18px; }
       .cc-pow-label { color: ${c.base04}; font-size: 10px; }
@@ -236,13 +262,17 @@ in
       /* quick toggle pills */
       .cc-quick { min-width: 195px; }
       .cc-pill {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border: 1px solid transparent;
         border-radius: 12px;
         padding: 8px 10px;
       }
-      .cc-pill:hover { background-color: ${c.base03}; }
-      .cc-pill.active { background-color: ${c.base0D}; }
+      .cc-pill:hover { background-color: ${rgba "base03" "0.75"}; }
+      .cc-pill.active {
+        background-color: ${c.base0D};
+        background-image: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+        box-shadow: 0 3px 12px ${rgba "base0D" "0.45"};
+      }
       .cc-pill.active .cc-pill-ico,
       .cc-pill.active .cc-pill-label { color: ${c.base00}; }
       .cc-pill-ico { color: ${c.base05}; font-size: 15px; }
@@ -250,12 +280,17 @@ in
 
       /* chunky vertical sliders */
       .cc-vslider trough {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border-radius: 12px;
         min-width: 38px;
         min-height: 140px;
       }
-      .cc-vslider highlight { background-color: ${c.base0D}; border-radius: 12px; }
+      .cc-vslider highlight {
+        background-color: ${c.base0D};
+        background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0) 70%);
+        box-shadow: 0 2px 10px ${rgba "base0D" "0.35"};
+        border-radius: 12px;
+      }
       .cc-vslider slider {
         background-color: transparent;
         min-width: 0;
@@ -267,31 +302,35 @@ in
 
       /* game/caffeine chips */
       .cc-chip {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border: 1px solid rgba(255, 255, 255, 0.06);
         border-radius: 10px;
         padding: 6px 12px;
       }
-      .cc-chip:hover { background-color: ${c.base03}; }
-      .cc-chip.active { background-color: ${c.base0D}; }
+      .cc-chip:hover { background-color: ${rgba "base03" "0.75"}; }
+      .cc-chip.active {
+        background-color: ${c.base0D};
+        background-image: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+        box-shadow: 0 2px 10px ${rgba "base0D" "0.4"};
+      }
       .cc-chip.active .cc-chip-ico,
       .cc-chip.active .cc-chip-label { color: ${c.base00}; }
       .cc-chip-ico { color: ${c.base05}; font-size: 13px; }
       .cc-chip-label { color: ${c.base04}; font-size: 11px; }
 
       /* system stats rings */
-      .cc-cring { background-color: ${c.base02}; color: ${c.base03}; }
+      .cc-cring { background-color: ${rgba "base02" "0.6"}; color: ${c.base03}; }
       .cc-cring.cpu  { color: ${c.base0B}; }
       .cc-cring.ram  { color: ${c.base0D}; }
       .cc-cring.disk { color: ${c.base0E}; }
-      .cc-cring-inner { min-width: 42px; min-height: 42px; }
-      .cc-cring-ico { color: ${c.base05}; font-size: 15px; }
-      .cc-cring-val { color: ${c.base04}; font-size: 11px; }
+      .cc-cring-inner { min-width: 52px; min-height: 52px; }
+      .cc-cring-ico { color: ${c.base05}; font-size: 20px; }
+      .cc-cring-val { color: ${c.base04}; font-size: 12px; }
 
       /* notifications */
       .cc-notif-title { color: ${c.base05}; font-size: 13px; font-weight: bold; }
       .cc-notif {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         border-radius: 10px;
         padding: 8px 10px;
       }
@@ -303,7 +342,7 @@ in
       /* music player */
       .mc-root { padding: 4px; }
       .mc-art {
-        background-color: ${c.base02};
+        background-color: ${rgba "base02" "0.6"};
         background-size: cover;
         background-position: center;
         border-radius: 12px;
@@ -315,7 +354,7 @@ in
       .mc-artist { color: ${c.base04}; font-size: 12px; }
       .mc-time { color: ${c.base03}; font-size: 10px; }
       .mc-seek trough {
-        background-color: ${c.base02}; border-radius: 12px;
+        background-color: ${rgba "base02" "0.6"}; border-radius: 12px;
         min-height: 6px; min-width: 180px;
       }
       .mc-seek highlight { background-color: ${c.base0D}; border-radius: 12px; }

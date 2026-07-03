@@ -9,6 +9,10 @@ let
   c = config.lib.stylix.colors.withHashtag;
   themeDir = "${config.xdg.configHome}/rofi/themes";
 
+  # rasi rgba() from the palette for the glass surfaces (blur via layerrule).
+  raw = config.lib.stylix.colors;
+  rgba = base: pct: "rgba ( ${raw."${base}-rgb-r"}, ${raw."${base}-rgb-g"}, ${raw."${base}-rgb-b"}, ${pct} % )";
+
   # ── applet scripts (Wayland-native; gh0stzk's were X11/bspwm) ────────────
   powermenu = pkgs.writeShellScriptBin "powermenu" ''
     lock="󰌾"; logout="󰗽"; suspend="󰤄"; reboot="󰜉"; poweroff="󰐥"
@@ -31,7 +35,7 @@ let
     mkdir -p "$dir"
     file="$dir/Shot-$(date +%Y-%m-%d-%H%M%S).png"
 
-    full="";  region="󰩭";  window="󰖯";  timed="󰔝";  allmon="󰍹"
+    full="󰹑";  region="󰩭";  window="󰖯";  timed="󰔝";  allmon="󰍹"
     choice=$(printf '%s\n%s\n%s\n%s\n%s\n' \
       "$full" "$region" "$window" "$timed" "$allmon" \
       | rofi -dmenu -p Screenshot -mesg "→ $dir" \
@@ -60,7 +64,7 @@ let
 
   clipmenu = pkgs.writeShellScriptBin "clipmenu" ''
     cliphist list \
-      | rofi -dmenu -i -p " Clipboard" -theme ${themeDir}/list.rasi \
+      | rofi -dmenu -i -p "󰅇 Clipboard" -theme ${themeDir}/list.rasi \
       | cliphist decode \
       | wl-copy
   '';
@@ -72,7 +76,7 @@ let
       | jq -r '.[] | select(.title != "" and .mapped) | "\(.address)\t\(.class): \(.title)"')
     [ "''${#rows[@]}" -eq 0 ] && exit 0
     idx=$(printf '%s\n' "''${rows[@]}" | cut -f2- \
-      | rofi -dmenu -i -p " Windows" -format i -theme ${themeDir}/list.rasi)
+      | rofi -dmenu -i -p "󰕰 Windows" -format i -theme ${themeDir}/list.rasi)
     [ -z "$idx" ] && exit 0
     addr=$(printf '%s' "''${rows[$idx]}" | cut -f1)
     [ -n "$addr" ] && hyprctl dispatch focuswindow "address:$addr"
@@ -105,16 +109,22 @@ in
     "rofi/themes/list.rasi".source = ./themes/list.rasi;
 
     # Palette-driven colours every applet theme @imports.
+    # `background` stays opaque (it doubles as on-accent text colour);
+    # glass* are the translucent surfaces the compositor blurs behind.
     "rofi/themes/shared.rasi".text = ''
       * {
           font:             "JetBrainsMono Nerd Font Bold 11";
           background:       ${c.base00};
-          background-alt:   ${c.base01};
-          bg-alt:           ${c.base01};
+          background-alt:   ${rgba "base01" "55"};
+          bg-alt:           ${rgba "base01" "55"};
           foreground:       ${c.base05};
           selected:         ${c.base0D};
           active:           ${c.base0B};
           urgent:           ${c.base08};
+          glass:            ${rgba "base00" "55"};
+          glass-item:       ${rgba "base02" "45"};
+          glass-edge:       rgba ( 255, 255, 255, 12 % );
+          glass-edge-dim:   rgba ( 255, 255, 255, 7 % );
       }
     '';
 

@@ -107,6 +107,13 @@ with lib;
               disable_hyprland_logo = true
           }
 
+          # frosted glass for eww (gtk-layer-shell), rofi and mako
+          # (notifications); ignore_alpha skips the transparent parts of each
+          # layer surface so only the rgba panels/islands get the backdrop blur
+          layerrule = blur on, ignore_alpha 0.3, match:namespace ^(gtk-layer-shell|rofi|notifications)$
+          # dim the desktop behind rofi menus for focus/depth
+          layerrule = dim_around on, match:namespace ^(rofi)$
+
           windowrule = float class:^(pavucontrol)$
           windowrule = pin class:^(pavucontrol)$
           windowrule = size 900 500 class:^(pavucontrol)$

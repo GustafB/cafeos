@@ -9,7 +9,8 @@ running() { pgrep -x wlsunset >/dev/null 2>&1; }
 state() { if running; then echo true; else echo false; fi; }
 
 on() {
-  running || wlsunset -t "$TEMP" -T "$TEMP" >/dev/null 2>&1 &
+  # -T must be strictly higher than -t; 1K apart = constant temp in practice
+  running || wlsunset -t "$TEMP" -T "$((TEMP + 1))" >/dev/null 2>&1 &
   hyprctl notify 5 2000 "rgb(e0af68)" "Night light on"
 }
 
