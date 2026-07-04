@@ -6,7 +6,7 @@ let
       pkill -x rofi
       exit 0
     fi
-    rofi -show drun
+    rofi -show drun -theme ~/.config/rofi/themes/launcher.rasi
   '';
 in
 {
