@@ -66,7 +66,8 @@ with lib;
 
           general {
               gaps_in = 5
-              gaps_out = 20
+              # smaller top gap: bar has its own 8px margin, keeps islands visually centered
+              gaps_out = 8, 20, 20, 20
               border_size = 2
               resize_on_border = true
               layout = dwindle
