@@ -12,6 +12,7 @@
     ../programs/eww
     ../programs/rofi
     ../programs/applets
+    ../programs/theme
     ../programs/mako.nix
   ];
 }

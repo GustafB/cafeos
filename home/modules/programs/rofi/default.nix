@@ -125,7 +125,7 @@
     }
 
     button selected {
-        background-image:   linear-gradient(to right, ${config.lib.stylix.colors.withHashtag.base0D}, ${config.lib.stylix.colors.withHashtag.base0C});
+        background-image:   @accent-gradient;
         border-color:       @selected;
         text-color:         @background;
     }
@@ -202,7 +202,7 @@
     }
 
     element selected.normal {
-        background-image:   linear-gradient(to bottom, ${config.lib.stylix.colors.withHashtag.base0D}, ${config.lib.stylix.colors.withHashtag.base0C});
+        background-image:   @accent-gradient-v;
         border-color:       @selected;
         text-color:         @background;
     }

@@ -1,0 +1,95 @@
+// Wallpaper/theme picker -- glass grid of wallpaper previews
+configuration {
+    hover-select:       true;
+    me-select-entry:    "";
+    me-accept-entry:    "MousePrimary";
+}
+
+@import "shared.rasi"
+
+window {
+    transparency:       "real";
+    location:           center;
+    anchor:             center;
+    width:              940px;
+    border:             1px solid;
+    border-radius:      16px;
+    border-color:       @glass-edge;
+    background-color:   @glass;
+}
+
+mainbox {
+    spacing:            14px;
+    padding:            20px;
+    background-color:   transparent;
+    children:           [ "inputbar", "listview" ];
+}
+
+inputbar {
+    spacing:            10px;
+    background-color:   transparent;
+    text-color:         @foreground;
+    children:           [ "textbox-prompt-colon", "prompt" ];
+}
+
+textbox-prompt-colon {
+    expand:             false;
+    str:                "󰸉";
+    padding:            10px 15px 10px 13px;
+    border-radius:      8px;
+    background-color:   @selected;
+    text-color:         @background;
+}
+
+prompt {
+    padding:            10px 0px;
+    background-color:   transparent;
+    text-color:         @foreground;
+}
+
+listview {
+    columns:            2;
+    lines:              2;
+    cycle:              true;
+    dynamic:            true;
+    scrollbar:          false;
+    layout:             vertical;
+    fixed-columns:      true;
+    spacing:            12px;
+    background-color:   transparent;
+    cursor:             "default";
+}
+
+element {
+    spacing:            8px;
+    padding:            10px;
+    border-radius:      12px;
+    border:             1px solid;
+    border-color:       @glass-edge-dim;
+    background-color:   @glass-item;
+    text-color:         @foreground;
+    cursor:             pointer;
+    orientation:        vertical;
+    children:           [ "element-icon", "element-text" ];
+}
+
+element selected.normal {
+    background-image:   @accent-gradient-v;
+    border-color:       @selected;
+    text-color:         @background;
+}
+
+element-icon {
+    background-color:   transparent;
+    size:               190px;
+    cursor:             inherit;
+    horizontal-align:   0.5;
+}
+
+element-text {
+    font:               "JetBrainsMono Nerd Font 11";
+    background-color:   transparent;
+    text-color:         inherit;
+    cursor:             inherit;
+    horizontal-align:   0.5;
+}

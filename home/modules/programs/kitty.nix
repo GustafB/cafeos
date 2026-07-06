@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  # Colors/font/opacity come from Stylix (build-time, follows vars.wallpaper).
   programs.kitty = {
     enable = true;
     package = pkgs.kitty;
@@ -18,5 +19,4 @@
       map alt+equal change_font_size all +1
     '';
   };
-
 }

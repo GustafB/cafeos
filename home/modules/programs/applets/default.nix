@@ -4,8 +4,8 @@
   ...
 }:
 let
-  # Tokyo Night palette from Stylix, shared by every rofi applet theme via
-  # an @import "shared.rasi". Single source of truth = modules/config/stylix.nix.
+  # Palette from Stylix, shared by every rofi theme via @import "shared.rasi".
+  # Single source of truth = vars.wallpaper -> modules/config/stylix.nix.
   c = config.lib.stylix.colors.withHashtag;
   themeDir = "${config.xdg.configHome}/rofi/themes";
 
@@ -110,23 +110,25 @@ in
     "rofi/themes/screenshot.rasi".source = ./themes/screenshot.rasi;
     "rofi/themes/list.rasi".source = ./themes/list.rasi;
 
-    # Palette-driven colours every applet theme @imports.
+    # Palette-driven colours every rofi theme @imports.
     # `background` stays opaque (it doubles as on-accent text colour);
     # glass* are the translucent surfaces the compositor blurs behind.
     "rofi/themes/shared.rasi".text = ''
       * {
-          font:             "JetBrainsMono Nerd Font Bold 11";
-          background:       ${c.base00};
-          background-alt:   ${rgba "base01" "55"};
-          bg-alt:           ${rgba "base01" "55"};
-          foreground:       ${c.base05};
-          selected:         ${c.base0D};
-          active:           ${c.base0B};
-          urgent:           ${c.base08};
-          glass:            ${rgba "base00" "55"};
-          glass-item:       ${rgba "base02" "45"};
-          glass-edge:       rgba ( 255, 255, 255, 12 % );
-          glass-edge-dim:   rgba ( 255, 255, 255, 7 % );
+          font:              "JetBrainsMono Nerd Font Bold 11";
+          background:        ${c.base00};
+          background-alt:    ${rgba "base01" "55"};
+          bg-alt:            ${rgba "base01" "55"};
+          foreground:        ${c.base05};
+          selected:          ${c.base0D};
+          active:            ${c.base0B};
+          urgent:            ${c.base08};
+          glass:             ${rgba "base00" "55"};
+          glass-item:        ${rgba "base02" "45"};
+          glass-edge:        rgba ( 255, 255, 255, 12 % );
+          glass-edge-dim:    rgba ( 255, 255, 255, 7 % );
+          accent-gradient:   linear-gradient(to right, ${c.base0D}, ${c.base0C});
+          accent-gradient-v: linear-gradient(to bottom, ${c.base0D}, ${c.base0C});
       }
     '';
 

@@ -149,6 +149,7 @@ with lib;
             bind = ${modifier},D,exec,appswitcher
             bind = ${modifier},V,exec,clipmenu
             bind = ${modifier}SHIFT,E,exec,powermenu
+            bind = ${modifier}SHIFT,W,exec,wallpaper-menu
             bind = ${modifier}SHIFT,N,exec,network-menu
             bind = ,Print,exec,screenshot
 

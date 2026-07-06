@@ -4,9 +4,8 @@
   ...
 }:
 let
-  # Tokyo Night palette from the central stylix theme, with leading '#'.
-  # Single source of truth: change the scheme in modules/config/stylix.nix and
-  # this bar follows automatically.
+  # Palette from the central stylix theme, with leading '#'. Single source of
+  # truth: vars.wallpaper -> stylix derived scheme (modules/config/stylix.nix).
   c = config.lib.stylix.colors.withHashtag;
 
   # rgba() from the palette, for the glass surfaces. Hyprland blurs what's
