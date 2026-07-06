@@ -1,10 +1,11 @@
 {
   username,
+  vars,
   lib,
   ...
 }:
 let
-  wallpaperDir = "/home/${username}/.config/cafeos-assets/wallpapers";
+  wallpaper = "/home/${username}/.config/cafeos-assets/wallpapers/${vars.wallpaper}";
 in
 {
   # This module is the sole authority on the wallpaper (multi-monitor aware).
@@ -17,14 +18,13 @@ in
     settings = {
       ipc = "off";
       splash = "false";
-      preload = [
-        "${wallpaperDir}/wallpaper.jpg"
-      ];
-      # empty monitor = apply to every output (host-agnostic: desktop DP-*,
-      # laptop eDP-1, etc.)
-      wallpaper = [
-        ",${wallpaperDir}/wallpaper.jpg"
-      ];
+      # hyprpaper 0.8+ block syntax; the old `wallpaper = ,path` one-liner
+      # parses but silently paints nothing. Empty monitor = every output
+      # (host-agnostic: desktop DP-*, laptop eDP-1, etc.); no preload needed.
+      wallpaper = {
+        monitor = "";
+        path = wallpaper;
+      };
     };
   };
 }

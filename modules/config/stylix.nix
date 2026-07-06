@@ -9,23 +9,21 @@
 # borders, gtk, qt, btop, bat, fzf, the tty, ...). Gated on `vars.gui` so the
 # headless WSL host is untouched.
 #
-# Phase two (dynamic theming) swaps `base16Scheme` for a wallpaper-derived
-# palette (or matugen) without touching any of the per-app wiring.
+# Dynamic theming: no base16Scheme is set, so Stylix derives a dark palette
+# from `vars.wallpaper` — swap the wallpaper in variables.nix, rebuild, and
+# every app follows.
 lib.mkIf vars.gui {
   stylix = {
     enable = true;
     polarity = "dark";
 
-    # Tokyo Night — "Night" variant (background #1a1b26).
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
-
     # Slight terminal translucency; hyprland blurs behind it (glass look).
     opacity.terminal = 0.92;
 
-    # Stylix expects a wallpaper image; reuse the repo asset. hyprpaper.nix
-    # remains the authority on actually painting the wallpaper (see the target
-    # disabled in that module) — this just satisfies Stylix's requirement.
-    image = ../../home/modules/hyprland/config/assets/wallpapers/wallpaper.jpg;
+    # Palette seed AND the image hyprpaper paints (hyprpaper.nix reads the
+    # same vars.wallpaper; its Stylix target stays disabled for multi-monitor
+    # control).
+    image = ../../home/modules/hyprland/config/assets/wallpapers/${vars.wallpaper};
 
     fonts = {
       monospace = {
