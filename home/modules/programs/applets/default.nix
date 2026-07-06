@@ -20,6 +20,7 @@ let
       "$lock" "$suspend" "$logout" "$reboot" "$poweroff" \
       | rofi -dmenu -p "Goodbye $USER" \
              -mesg "Uptime: $(uptime -p | sed 's/^up //')" \
+             -kb-row-left "h" -kb-row-right "l" \
              -theme ${themeDir}/powermenu.rasi)
     case "$chosen" in
       "$lock")     screenlock ;;
@@ -39,6 +40,7 @@ let
     choice=$(printf '%s\n%s\n%s\n%s\n%s\n' \
       "$full" "$region" "$window" "$timed" "$allmon" \
       | rofi -dmenu -p Screenshot -mesg "→ $dir" \
+             -kb-row-left "h" -kb-row-right "l" \
              -theme ${themeDir}/screenshot.rasi)
     [ -z "$choice" ] && exit 0
 
