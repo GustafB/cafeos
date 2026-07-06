@@ -8,6 +8,11 @@ let
   wallpaperDir = "/home/${username}/.config/cafeos-assets/wallpapers";
   repoVars = "/home/${username}/cafeos/hosts/$(hostname)/variables.nix";
 
+  # Glass rofi password prompt for sudo -A (retries come back as new prompts).
+  rofi-askpass = pkgs.writeShellScriptBin "rofi-askpass" ''
+    rofi -dmenu -password -p "sudo" -theme ${rasiDir}/askpass.rasi </dev/null
+  '';
+
   # theme-set <image>: point vars.wallpaper at it and rebuild. Stylix derives
   # the palette from the wallpaper at build time and fans it out everywhere,
   # so the rebuild IS the theme switch.
@@ -23,14 +28,53 @@ let
     fi
     ${pkgs.gnused}/bin/sed -i "s/wallpaper = \"[^\"]*\"/wallpaper = \"$name\"/" ${repoVars}
 
-    # Visible rebuild; sudo prompts for the password in this window.
-    ${pkgs.util-linux}/bin/setsid -f kitty --title "cafeos theme rebuild" bash -c '
-      echo "Rebuilding with wallpaper: '"$name"'"
-      sudo nixos-rebuild switch --flake "/home/${username}/cafeos#$(hostname)" \
-        && echo -e "\n\033[1;32mtheme applied.\033[0m" \
-        || echo -e "\n\033[1;31mrebuild failed.\033[0m"
-      read -n1 -rp "press any key to close"
-    ' >/dev/null 2>&1 || true
+    # Password FIRST (rofi askpass caches the sudo credential), THEN the
+    # fullscreen progress overlay -- otherwise the overlay would sit on top
+    # of the password prompt. The sudo -v validation MUST happen inside the
+    # setsid session: credential caches are per-session, so validating before
+    # detaching leaves sudo -n with nothing.
+    export SUDO_ASKPASS=${rofi-askpass}/bin/rofi-askpass
+    ${pkgs.util-linux}/bin/setsid -f bash -c '
+      log=$1; name=$2; flake=$3
+      if ! sudo -A -v 2>/dev/null; then
+        notify-send "Theme" "Cancelled" || true
+        exit 0
+      fi
+      : > "$log"
+      eww update rebuild-status="evaluating" rebuild-pct=3 2>/dev/null || true
+      eww open rebuildsplash 2>/dev/null || notify-send "Theme" "Rebuilding with $name..."
+
+      # sudo -n: uses the credential just cached by sudo -v, never prompts
+      sudo -n nixos-rebuild switch --flake "$flake" > "$log" 2>&1 &
+      rpid=$!
+
+      while kill -0 "$rpid" 2>/dev/null; do
+        total=$(grep -m1 -oE "these [0-9]+ derivations" "$log" | grep -oE "[0-9]+" || true)
+        cnt=$(grep -c "^building ./nix/store" "$log" || true)
+        if [ -n "$total" ] && [ "$total" -gt 0 ]; then
+          pct=$(( cnt * 100 / total )); [ "$pct" -gt 100 ] && pct=100
+          eww update rebuild-status="$cnt/$total derivations" rebuild-pct="$pct" 2>/dev/null || true
+        fi
+        sleep 2
+      done
+
+      if wait "$rpid"; then
+        eww update rebuild-status="restyling" rebuild-pct=100 2>/dev/null || true
+        # reload restyles the daemon in place (no bar blink); fall back to a
+        # hard restart if the flaky reload fails
+        if ! eww reload 2>/dev/null; then
+          eww kill 2>/dev/null; sleep 1
+          eww daemon 2>/dev/null; sleep 2
+          eww open bar 2>/dev/null
+        fi
+        sleep 1
+        eww close rebuildsplash 2>/dev/null || true
+        notify-send "Theme" "Applied $name"
+      else
+        eww close rebuildsplash 2>/dev/null || true
+        notify-send -u critical "Theme" "Rebuild failed - see $log"
+      fi
+    ' theme-rebuild /tmp/theme-rebuild.log "$name" "/home/${username}/cafeos#$(hostname)" >/dev/null 2>&1 || true
   '';
 
   # wallpaper-menu: rofi grid of wallpaper previews -> theme-set
@@ -65,8 +109,10 @@ in
   home.packages = [
     theme-set
     wallpaper-menu
+    rofi-askpass
   ];
 
-  # picker theme (imports shared.rasi from the same dir)
+  # picker + askpass themes (import shared.rasi from the same dir)
   xdg.configFile."rofi/themes/wallpaper.rasi".source = ./wallpaper.rasi;
+  xdg.configFile."rofi/themes/askpass.rasi".source = ./askpass.rasi;
 }

@@ -93,7 +93,8 @@ in
         background-color: ${rgba "base02" "0.55"};
         background-image: linear-gradient(170deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 45%);
         border: 1px solid rgba(255, 255, 255, 0.07);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+        /* no box-shadow: GTK3 draws it as a rectangle (ignores the border
+           radius), which reads as a dirty box on bright wallpapers */
         color: ${c.base05};
         border-radius: 12px;
         padding: 2px 12px;
@@ -113,6 +114,27 @@ in
       .net-ico { color: ${c.base0C}; }
       .vol-ico { color: ${c.base0E}; }
       .tray { padding: 0 6px; }
+
+      /* rebuild overlay: full-screen dark sheet (alpha > layerrule
+         ignore_alpha, so the compositor blurs everything behind it) */
+      .splash-bg { background-color: rgba(0, 0, 0, 0.45); }
+      .splash-card {
+        background-color: ${rgba "base00" "0.75"};
+        background-image: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 55%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 28px 40px;
+      }
+      .splash-ico { color: ${c.base0D}; font-size: 44px; }
+      .splash-title { color: ${c.base05}; font-size: 16px; font-weight: bold; }
+      .splash-status { color: ${c.base04}; font-size: 12px; }
+      .splash-bar { min-width: 260px; }
+      .splash-bar trough {
+        background-color: ${rgba "base02" "0.6"};
+        border-radius: 12px;
+        min-height: 10px;
+      }
+      .splash-bar progress { background-color: ${c.base0D}; border-radius: 12px; }
 
       /* popups */
       .popup {

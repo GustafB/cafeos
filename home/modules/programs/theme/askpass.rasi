@@ -1,0 +1,62 @@
+// sudo askpass -- small glass password prompt (used by theme-set)
+configuration {
+}
+
+@import "shared.rasi"
+
+window {
+    transparency:       "real";
+    location:           center;
+    anchor:             center;
+    width:              360px;
+    border:             1px solid;
+    border-radius:      14px;
+    border-color:       @glass-edge;
+    background-color:   @glass;
+}
+
+mainbox {
+    padding:            16px;
+    background-color:   transparent;
+    children:           [ "inputbar" ];
+}
+
+inputbar {
+    spacing:            0px;
+    padding:            2px;
+    border:             1px solid;
+    border-color:       @glass-edge-dim;
+    border-radius:      10px;
+    background-color:   @glass-item;
+    text-color:         @foreground;
+    children:           [ "textbox-prompt-colon", "entry" ];
+}
+
+textbox-prompt-colon {
+    expand:             false;
+    str:                "󰌾";
+    padding:            10px 13px;
+    border-radius:      8px;
+    background-color:   @selected;
+    text-color:         @background;
+    vertical-align:     0.5;
+}
+
+entry {
+    expand:             true;
+    padding:            10px;
+    background-color:   transparent;
+    text-color:         inherit;
+    cursor:             text;
+    placeholder:        "password";
+    placeholder-color:  @foreground;
+    vertical-align:     0.5;
+}
+
+listview {
+    enabled:            false;
+}
+
+message {
+    enabled:            false;
+}
