@@ -49,11 +49,14 @@ prompt {
 
 listview {
     columns:            2;
-    lines:              2;
+    lines:              3;
     cycle:              true;
     dynamic:            true;
     scrollbar:          false;
     layout:             vertical;
+    // fill row-by-row: default vertical flow stacks a partial last page
+    // into the first column only
+    flow:               horizontal;
     fixed-columns:      true;
     spacing:            12px;
     background-color:   transparent;
