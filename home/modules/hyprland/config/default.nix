@@ -190,8 +190,37 @@ with lib;
             bind = ${modifier}SHIFT,8,movetoworkspace,8
             bind = ${modifier}SHIFT,9,movetoworkspace,9
             bind = ${modifier}SHIFT,0,movetoworkspace,10
-            bind = ALT,Tab,cyclenext
-            bind = ALT,Tab,bringactivetotop
+            bind = ALT,Tab,exec,appswitcher
+
+            # mouse drag on floats: mod+LMB move, mod+RMB resize
+            bindm = ${modifier},mouse:272,movewindow
+            bindm = ${modifier},mouse:273,resizewindow
+
+            # resize/move mode: mod+R, then h/j/k/l or arrows to resize,
+            # shift+h/j/k/l to move floats (held keys repeat);
+            # j/k follow the movefocus convention above (j=up, k=down)
+            bind = ${modifier},R,submap,resize
+            submap = resize
+            binde = ,h,resizeactive,-40 0
+            binde = ,l,resizeactive,40 0
+            binde = ,j,resizeactive,0 -40
+            binde = ,k,resizeactive,0 40
+            binde = ,left,resizeactive,-40 0
+            binde = ,right,resizeactive,40 0
+            binde = ,up,resizeactive,0 -40
+            binde = ,down,resizeactive,0 40
+            binde = SHIFT,h,moveactive,-40 0
+            binde = SHIFT,l,moveactive,40 0
+            binde = SHIFT,j,moveactive,0 -40
+            binde = SHIFT,k,moveactive,0 40
+            binde = SHIFT,left,moveactive,-40 0
+            binde = SHIFT,right,moveactive,40 0
+            binde = SHIFT,up,moveactive,0 -40
+            binde = SHIFT,down,moveactive,0 40
+            bind = ,escape,submap,reset
+            bind = ,Return,submap,reset
+            bind = ${modifier},R,submap,reset
+            submap = reset
         ''
       ];
   };
