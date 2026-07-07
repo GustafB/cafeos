@@ -4,7 +4,7 @@
 
     # wallpaper (in home/modules/hyprland/config/assets/wallpapers/); also the
     # seed image Stylix derives the system palette from
-    wallpaper = "surface-mountains.jpg";
+    wallpaper = "wallpaper.jpg";
 
     gitUsername = "gustafb";
     gitEmail = "gustaf.brostedt@gmail.com";

@@ -97,6 +97,8 @@ let
         fi
         printf '%s\0icon\x1f%s\n' "$name" "$thumb"
       done | rofi -dmenu -p "󰸉 Wallpaper" -show-icons \
+                  -kb-row-left "h" -kb-row-right "l" \
+                  -kb-row-up "k" -kb-row-down "j" \
                   -theme ${rasiDir}/wallpaper.rasi
     ) || exit 0
     [ -n "$chosen" ] || exit 0

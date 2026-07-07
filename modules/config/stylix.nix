@@ -25,6 +25,12 @@ lib.mkIf vars.gui {
     # control).
     image = ../../home/modules/hyprland/config/assets/wallpapers/${vars.wallpaper};
 
+    cursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 24;
+    };
+
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;
