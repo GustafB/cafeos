@@ -42,6 +42,9 @@ let
       fi
       : > "$log"
       eww update rebuild-status="evaluating" rebuild-pct=3 2>/dev/null || true
+      # the splash geometry assumes the bar exclusive zone exists; make sure
+      # the bar is up (no-op error if it already is) before opening the splash
+      eww open bar 2>/dev/null || true
       eww open rebuildsplash 2>/dev/null || notify-send "Theme" "Rebuilding with $name..."
 
       # sudo -n: uses the credential just cached by sudo -v, never prompts
@@ -97,8 +100,9 @@ let
         fi
         printf '%s\0icon\x1f%s\n' "$name" "$thumb"
       done | rofi -dmenu -p "󰸉 Wallpaper" -show-icons \
-                  -kb-row-left "h" -kb-row-right "l" \
-                  -kb-row-up "k" -kb-row-down "j" \
+                  -kb-move-char-back "Control+b" -kb-move-char-forward "Control+f" \
+                  -kb-row-left "h,Left" -kb-row-right "l,Right" \
+                  -kb-row-up "k,Up,Control+p" -kb-row-down "j,Down,Control+n" \
                   -theme ${rasiDir}/wallpaper.rasi
     ) || exit 0
     [ -n "$chosen" ] || exit 0

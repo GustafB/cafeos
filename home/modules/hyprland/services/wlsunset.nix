@@ -1,13 +1,14 @@
 {
+  vars,
   ...
 }:
 {
-  # night light: warms the screen after sunset, computed from location
+  # night light: warms the screen after sunset, computed from the host
+  # location in hosts/*/variables.nix (shared with the weather island)
   services.wlsunset = {
     enable = true;
-    # Stockholm-ish; close enough anywhere in Sweden for sunset times
-    latitude = 59.3;
-    longitude = 18.1;
+    latitude = vars.latitude;
+    longitude = vars.longitude;
     temperature = {
       day = 6500;
       night = 4000;

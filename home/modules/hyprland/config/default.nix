@@ -60,7 +60,6 @@ with lib;
           exec-once = 1password --silent
           exec-once = hypridle
           exec-once = hyprlock
-          exec-once = [workspace special:term silent] ${terminal} --class kitty-scratch
           monitor=,preferred,auto,1
           ${monitorSettings} 
 
@@ -149,16 +148,18 @@ with lib;
             bind = ${modifier},slash,exec,eww open --toggle cheatsheet
             bind = ${modifier},grave,exec,eww update cc-power=false & eww open --toggle controlcenter
 
-            # hardware fn keys (l = works while locked, e = repeats on hold)
-            bindel = ,XF86AudioRaiseVolume,exec,wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
-            bindel = ,XF86AudioLowerVolume,exec,wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-            bindl = ,XF86AudioMute,exec,wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+            # hardware fn keys (l = works while locked, e = repeats on hold);
+            # route through the eww scripts so keys, bar and control center
+            # share one implementation (5% steps, volume cap, active player)
+            bindel = ,XF86AudioRaiseVolume,exec,bash ~/.config/eww/scripts/volume.sh scroll up
+            bindel = ,XF86AudioLowerVolume,exec,bash ~/.config/eww/scripts/volume.sh scroll down
+            bindl = ,XF86AudioMute,exec,bash ~/.config/eww/scripts/volume.sh toggle
             bindl = ,XF86AudioMicMute,exec,wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
-            bindel = ,XF86MonBrightnessUp,exec,brightnessctl -q s 5%+
-            bindel = ,XF86MonBrightnessDown,exec,brightnessctl -q s 5%-
-            bindl = ,XF86AudioPlay,exec,playerctl play-pause
-            bindl = ,XF86AudioNext,exec,playerctl next
-            bindl = ,XF86AudioPrev,exec,playerctl previous
+            bindel = ,XF86MonBrightnessUp,exec,bash ~/.config/eww/scripts/brightness.sh step +5
+            bindel = ,XF86MonBrightnessDown,exec,bash ~/.config/eww/scripts/brightness.sh step -5
+            bindl = ,XF86AudioPlay,exec,bash ~/.config/eww/scripts/mediacontrol.sh --playpause
+            bindl = ,XF86AudioNext,exec,bash ~/.config/eww/scripts/mediacontrol.sh --next
+            bindl = ,XF86AudioPrev,exec,bash ~/.config/eww/scripts/mediacontrol.sh --prev
 
             # drop-down scratchpad terminal on the special workspace
             # (script respawns/retrieves the window if closed or moved away)
@@ -182,10 +183,6 @@ with lib;
             bind = ${modifier}SHIFT,l,movewindow,r
             bind = ${modifier}SHIFT,j,movewindow,u
             bind = ${modifier}SHIFT,k,movewindow,d
-            bind = ${modifier}SHIFT,left,movefocus,l
-            bind = ${modifier}SHIFT,right,movefocus,r
-            bind = ${modifier}SHIFT,up,movefocus,u
-            bind = ${modifier}SHIFT,down,movefocus,d
             bind = ${modifier},h,movefocus,l
             bind = ${modifier},l,movefocus,r
             bind = ${modifier},j,movefocus,u
@@ -211,6 +208,8 @@ with lib;
             bind = ${modifier}SHIFT,9,movetoworkspace,9
             bind = ${modifier}SHIFT,0,movetoworkspace,10
             bind = ALT,Tab,exec,appswitcher
+            # quick flip to previous window (picker needs Alt released first)
+            bind = ALTSHIFT,Tab,focuscurrentorlast,
 
             # mouse drag on floats: mod+LMB move, mod+RMB resize
             bindm = ${modifier},mouse:272,movewindow
@@ -221,22 +220,19 @@ with lib;
             # j/k follow the movefocus convention above (j=up, k=down)
             bind = ${modifier},R,submap,resize
             submap = resize
-            binde = ,h,resizeactive,-40 0
-            binde = ,l,resizeactive,40 0
-            binde = ,j,resizeactive,0 -40
-            binde = ,k,resizeactive,0 40
-            binde = ,left,resizeactive,-40 0
-            binde = ,right,resizeactive,40 0
-            binde = ,up,resizeactive,0 -40
-            binde = ,down,resizeactive,0 40
-            binde = SHIFT,h,moveactive,-40 0
-            binde = SHIFT,l,moveactive,40 0
-            binde = SHIFT,j,moveactive,0 -40
-            binde = SHIFT,k,moveactive,0 40
-            binde = SHIFT,left,moveactive,-40 0
-            binde = SHIFT,right,moveactive,40 0
-            binde = SHIFT,up,moveactive,0 -40
-            binde = SHIFT,down,moveactive,0 40
+            ${concatMapStrings (
+              d: ''
+                binde = ,${d.key},resizeactive,${d.delta}
+                            binde = ,${d.arrow},resizeactive,${d.delta}
+                            binde = SHIFT,${d.key},moveactive,${d.delta}
+                            binde = SHIFT,${d.arrow},moveactive,${d.delta}
+              ''
+            ) [
+              { key = "h"; arrow = "left";  delta = "-40 0"; }
+              { key = "l"; arrow = "right"; delta = "40 0"; }
+              { key = "j"; arrow = "up";    delta = "0 -40"; }
+              { key = "k"; arrow = "down";  delta = "0 40"; }
+            ]}
             bind = ,escape,submap,reset
             bind = ,Return,submap,reset
             bind = ${modifier},R,submap,reset

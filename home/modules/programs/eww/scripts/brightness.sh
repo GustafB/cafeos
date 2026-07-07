@@ -8,4 +8,10 @@ case "${1:-get}" in
       echo $(( 100 * $(brightnessctl g) / max ))
     fi ;;
   set) brightnessctl -q s "${2}%" ;;
+  # relative step for the hardware keys, e.g. `step +5` / `step -5`
+  step)
+    case "$2" in
+      +*) brightnessctl -q s "${2#+}%+" ;;
+      -*) brightnessctl -q s "${2#-}%-" ;;
+    esac ;;
 esac

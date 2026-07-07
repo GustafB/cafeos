@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  vars,
   ...
 }:
 let
@@ -68,6 +69,13 @@ in
 
   xdg.configFile = {
     "eww/eww.yuck".source = ./eww.yuck;
+
+    # host location from variables.nix, sourced by scripts/weather.sh
+    # (same coordinates drive the wlsunset night-light schedule)
+    "cafeos/location.conf".text = ''
+      LAT=${vars.latitude}
+      LON=${vars.longitude}
+    '';
   }
   // scriptFiles
   // widgetFiles

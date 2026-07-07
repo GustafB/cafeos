@@ -25,6 +25,7 @@
         (keyrow :combo "Alt + Shift + F"      :action "Toggle floating")
         (keyrow :combo "Alt + Shift + I"      :action "Toggle split")
         (keyrow :combo "Alt + Tab"            :action "Window switcher")
+        (keyrow :combo "Alt + Shift + Tab"    :action "Previous window")
         (keyrow :combo "Alt + R"              :action "Resize/move mode")
         (keyrow :combo "  hjkl / +Shift"      :action "Resize / move float")
         (keyrow :combo "Alt + LMB / RMB"      :action "Drag move / resize")

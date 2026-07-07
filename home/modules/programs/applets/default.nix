@@ -21,7 +21,8 @@ let
       "$lock" "$suspend" "$logout" "$reboot" "$poweroff" \
       | rofi -dmenu -p "Goodbye $USER" \
              -mesg "Uptime: $(uptime -p | sed 's/^up //')" \
-             -kb-row-left "h" -kb-row-right "l" \
+             -kb-move-char-back "Control+b" -kb-move-char-forward "Control+f" \
+             -kb-row-left "h,Left" -kb-row-right "l,Right" \
              -theme ${themeDir}/powermenu.rasi)
     case "$chosen" in
       "$lock")     screenlock ;;
@@ -41,7 +42,8 @@ let
     choice=$(printf '%s\n%s\n%s\n%s\n%s\n' \
       "$full" "$region" "$window" "$timed" "$allmon" \
       | rofi -dmenu -p Screenshot -mesg "→ $dir" \
-             -kb-row-left "h" -kb-row-right "l" \
+             -kb-move-char-back "Control+b" -kb-move-char-forward "Control+f" \
+             -kb-row-left "h,Left" -kb-row-right "l,Right" \
              -theme ${themeDir}/screenshot.rasi)
     [ -z "$choice" ] && exit 0
 
@@ -88,6 +90,11 @@ let
   # scratchpad toggle that survives the window being closed or moved off the
   # special workspace (a bare togglespecialworkspace bind handles neither)
   scratchpad = pkgs.writeShellScriptBin "scratchpad" ''
+    # serialize invocations: a double-press during the ~100ms before the
+    # spawned window maps would otherwise spawn a second terminal
+    exec 9>"''${XDG_RUNTIME_DIR:-/tmp}/cafeos-scratchpad.lock"
+    ${pkgs.util-linux}/bin/flock -n 9 || exit 0
+
     read -r addr ws < <(hyprctl clients -j \
       | jq -r 'map(select(.class == "kitty-scratch"))[0] // empty
                | "\(.address) \(.workspace.name)"')
@@ -100,15 +107,15 @@ let
     exec hyprctl dispatch togglespecialworkspace term
   '';
 
+  # hyprctl notify bypasses mako, so it shows even with DND already engaged --
+  # no sleep/ordering dance, and rapid double-presses stay a true toggle
   dnd-toggle = pkgs.writeShellScriptBin "dnd-toggle" ''
-    # notify BEFORE enabling (it would be invisible after), after disabling
     if makoctl mode | grep -q do-not-disturb; then
       makoctl mode -r do-not-disturb >/dev/null
-      notify-send "Notifications" "Do not disturb off"
+      hyprctl notify 5 2000 "rgb(7aa2f7)" "Notifications on"
     else
-      notify-send -t 1500 "Notifications" "Do not disturb on"
-      sleep 1.6
       makoctl mode -a do-not-disturb >/dev/null
+      hyprctl notify 5 2000 "rgb(e0af68)" "Do not disturb"
     fi
   '';
 

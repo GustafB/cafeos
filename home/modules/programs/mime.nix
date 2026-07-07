@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   vars,
   ...
 }:
@@ -68,7 +69,7 @@ let
     "application/zstd"
   ];
 
-  assoc = mimes: app: builtins.listToAttrs (map (m: { name = m; value = app; }) mimes);
+  assoc = mimes: app: lib.genAttrs mimes (_: app);
 in
 {
   home.packages = with pkgs; [

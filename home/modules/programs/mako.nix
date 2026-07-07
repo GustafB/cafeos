@@ -21,7 +21,7 @@
       height = 140;
       max-icon-size = 48;
 
-      # dnd-toggle applet flips this mode on/off (makoctl mode -t)
+      # flipped by the dnd-toggle applet and the control center bell
       "mode=do-not-disturb" = {
         invisible = 1;
       };
