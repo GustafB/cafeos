@@ -20,6 +20,11 @@
       width = 340;
       height = 140;
       max-icon-size = 48;
+
+      # dnd-toggle applet flips this mode on/off (makoctl mode -t)
+      "mode=do-not-disturb" = {
+        invisible = 1;
+      };
     };
   };
 }

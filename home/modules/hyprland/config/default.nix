@@ -60,6 +60,7 @@ with lib;
           exec-once = 1password --silent
           exec-once = hypridle
           exec-once = hyprlock
+          exec-once = [workspace special:term silent] ${terminal} --class kitty-scratch
           monitor=,preferred,auto,1
           ${monitorSettings} 
 
@@ -115,9 +116,12 @@ with lib;
           # dim the desktop behind rofi menus for focus/depth
           layerrule = dim_around on, match:namespace ^(rofi)$
 
-          windowrule = float class:^(pavucontrol)$
-          windowrule = pin class:^(pavucontrol)$
-          windowrule = size 900 500 class:^(pavucontrol)$
+          # 0.55 rule grammar: comma-separated "field value" pairs + match:
+          # (plain "float class:..." parses as ok but never matches)
+          windowrule = float on, pin on, size 900 500, match:class ^(pavucontrol)$
+
+          # scratchpad terminal: floating, centered on the special workspace
+          windowrule = float on, size 1400 800, center on, match:class ^(kitty-scratch)$
 
           xwayland {
             force_zero_scaling = true
@@ -145,12 +149,28 @@ with lib;
             bind = ${modifier},slash,exec,eww open --toggle cheatsheet
             bind = ${modifier},grave,exec,eww update cc-power=false & eww open --toggle controlcenter
 
+            # hardware fn keys (l = works while locked, e = repeats on hold)
+            bindel = ,XF86AudioRaiseVolume,exec,wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+            bindel = ,XF86AudioLowerVolume,exec,wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+            bindl = ,XF86AudioMute,exec,wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+            bindl = ,XF86AudioMicMute,exec,wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+            bindel = ,XF86MonBrightnessUp,exec,brightnessctl -q s 5%+
+            bindel = ,XF86MonBrightnessDown,exec,brightnessctl -q s 5%-
+            bindl = ,XF86AudioPlay,exec,playerctl play-pause
+            bindl = ,XF86AudioNext,exec,playerctl next
+            bindl = ,XF86AudioPrev,exec,playerctl previous
+
+            # drop-down scratchpad terminal on the special workspace
+            # (script respawns/retrieves the window if closed or moved away)
+            bind = ${modifier},S,exec,scratchpad
+
             # applets (rofi)
             bind = ${modifier},D,exec,appswitcher
             bind = ${modifier},V,exec,clipmenu
             bind = ${modifier}SHIFT,E,exec,powermenu
             bind = ${modifier}SHIFT,W,exec,wallpaper-menu
             bind = ${modifier}SHIFT,N,exec,network-menu
+            bind = ${modifier}SHIFT,D,exec,dnd-toggle
             bind = ,Print,exec,screenshot
 
             # workspace movement

@@ -27,7 +27,8 @@
         (keyrow :combo "Alt + Tab"            :action "Window switcher")
         (keyrow :combo "Alt + R"              :action "Resize/move mode")
         (keyrow :combo "  hjkl / +Shift"      :action "Resize / move float")
-        (keyrow :combo "Alt + LMB / RMB"      :action "Drag move / resize"))
+        (keyrow :combo "Alt + LMB / RMB"      :action "Drag move / resize")
+        (keyrow :combo "Alt + S"              :action "Scratchpad terminal"))
       (box :orientation "v" :space-evenly false :spacing 4 :hexpand true
         (cs-section :title "Focus")
         (keyrow :combo "Alt + H / J / K / L"  :action "Move focus")
@@ -44,6 +45,7 @@
         (keyrow :combo "Alt + V"              :action "Clipboard history")
         (keyrow :combo "Alt + Shift + W"      :action "Wallpaper / theme")
         (keyrow :combo "Alt + Shift + N"      :action "Network manager")
+        (keyrow :combo "Alt + Shift + D"      :action "Do not disturb")
         (keyrow :combo "Alt + Shift + E"      :action "Power menu")
         (cs-section :title "Widgets")
         (keyrow :combo "Alt + `"              :action "Control center")

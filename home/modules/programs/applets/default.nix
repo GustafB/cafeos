@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  vars,
   ...
 }:
 let
@@ -84,6 +85,33 @@ let
     [ -n "$addr" ] && hyprctl dispatch focuswindow "address:$addr"
   '';
 
+  # scratchpad toggle that survives the window being closed or moved off the
+  # special workspace (a bare togglespecialworkspace bind handles neither)
+  scratchpad = pkgs.writeShellScriptBin "scratchpad" ''
+    read -r addr ws < <(hyprctl clients -j \
+      | jq -r 'map(select(.class == "kitty-scratch"))[0] // empty
+               | "\(.address) \(.workspace.name)"')
+    if [ -z "''${addr:-}" ]; then
+      exec hyprctl dispatch exec "[workspace special:term] ${vars.terminal} --class kitty-scratch"
+    fi
+    if [ "$ws" != "special:term" ]; then
+      hyprctl dispatch movetoworkspacesilent "special:term,address:$addr"
+    fi
+    exec hyprctl dispatch togglespecialworkspace term
+  '';
+
+  dnd-toggle = pkgs.writeShellScriptBin "dnd-toggle" ''
+    # notify BEFORE enabling (it would be invisible after), after disabling
+    if makoctl mode | grep -q do-not-disturb; then
+      makoctl mode -r do-not-disturb >/dev/null
+      notify-send "Notifications" "Do not disturb off"
+    else
+      notify-send -t 1500 "Notifications" "Do not disturb on"
+      sleep 1.6
+      makoctl mode -a do-not-disturb >/dev/null
+    fi
+  '';
+
   # networkmanager_dmenu reads ~/.config/networkmanager-dmenu/config.ini for
   # its rofi invocation (see xdg.configFile below); this is just a stable name.
   network-menu = pkgs.writeShellScriptBin "network-menu" ''
@@ -103,6 +131,8 @@ in
     clipmenu
     appswitcher
     network-menu
+    dnd-toggle
+    scratchpad
   ];
 
   xdg.configFile = {
