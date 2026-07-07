@@ -50,7 +50,7 @@
     (metric :icon "󰋊" :css "disk" :tip "Disk" :value {round(EWW_DISK["/"].used_perc, 0)})))
 
 (defwidget launcher []
-  (eventbox :onclick "eww update cc-power=false & eww open --toggle controlcenter" :cursor "pointer"
+  (eventbox :onclick "bash scripts/cc-toggle.sh" :cursor "pointer"
     (box :class "island launcher"
       (label :class "launcher-ico" :text "󱄅"))))
 

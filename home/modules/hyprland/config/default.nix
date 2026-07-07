@@ -146,7 +146,7 @@ with lib;
             bind = ${modifier}SHIFT,I,layoutmsg,togglesplit
             bind = ${modifier}CTRL,l,exec,screenlock
             bind = ${modifier},slash,exec,eww open --toggle cheatsheet
-            bind = ${modifier},grave,exec,eww update cc-power=false & eww open --toggle controlcenter
+            bind = ${modifier},grave,exec,bash ~/.config/eww/scripts/cc-toggle.sh
 
             # hardware fn keys (l = works while locked, e = repeats on hold);
             # route through the eww scripts so keys, bar and control center

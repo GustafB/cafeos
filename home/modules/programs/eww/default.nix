@@ -29,6 +29,7 @@ let
     "weather.sh"
     "mediacontrol.sh"
     "notifications.sh"
+    "cc-toggle.sh"
   ];
   widgets = [
     "controlcenter.yuck"
