@@ -14,5 +14,6 @@
     ../programs/applets
     ../programs/theme
     ../programs/mako.nix
+    ../programs/mime.nix
   ];
 }

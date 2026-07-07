@@ -4,7 +4,8 @@ set -uo pipefail
 
 socket="${XDG_RUNTIME_DIR}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket2.sock"
 
-emit() { hyprctl activewindow -j | jq -r '.title // ""' | head -c 90; echo; }
+# jq -j: no trailing newline; the echo is each emission's only newline
+emit() { hyprctl activewindow -j | jq -j '.title // ""' | head -c 90; echo; }
 
 emit
 socat -U - "UNIX-CONNECT:${socket}" 2>/dev/null | while read -r line; do

@@ -31,6 +31,13 @@ lib.mkIf vars.gui {
       size = 24;
     };
 
+    # gtk icon theme (thunar & friends); the fallback hicolor set is sparse
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+    };
+
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;
