@@ -137,9 +137,11 @@
 
 ;; fullscreen rebuild overlay: dark translucent sheet (the compositor blurs
 ;; behind it, layerrule ignore_alpha) + centered glass progress card
+;; negative y pulls the surface up over the bar's exclusive zone (8px margin
+;; + 40px bar height) -- layer-shell would otherwise start it below the bar
 (defwindow rebuildsplash
   :monitor 0 :stacking "overlay" :exclusive false :focusable false
-  :geometry (geometry :width "100%" :height "100%" :anchor "center")
+  :geometry (geometry :y "-48px" :width "100%" :height "100%" :anchor "top center")
   (box :class "splash-bg"
     (box :class "splash-card" :halign "center" :valign "center"
          :orientation "v" :space-evenly false :spacing 14
