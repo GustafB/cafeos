@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
-# Night light via wlsunset (constant 3500K when on). Wayland-native, no geo.
+# Night light pill: pauses/resumes the wlsunset user service (which follows
+# sunset/sunrise from home/modules/hyprland/services/wlsunset.nix). Never
+# spawn wlsunset directly -- a second instance fights the service for gamma.
 
-TEMP=3500
+unit="wlsunset.service"
 
-running() { pgrep -x wlsunset >/dev/null 2>&1; }
+running() { systemctl --user is-active -q "$unit"; }
 
 # "true"/"false" for the eww active class.
 state() { if running; then echo true; else echo false; fi; }
 
 on() {
-  # -T must be strictly higher than -t; 1K apart = constant temp in practice
-  running || wlsunset -t "$TEMP" -T "$((TEMP + 1))" >/dev/null 2>&1 &
-  hyprctl notify 5 2000 "rgb(e0af68)" "Night light on"
+  systemctl --user start "$unit"
+  hyprctl notify 5 2000 "rgb(e0af68)" "Night light on (follows sunset)"
 }
 
 off() {
-  pkill -x wlsunset >/dev/null 2>&1
+  systemctl --user stop "$unit"
   hyprctl notify 5 2000 "rgb(7aa2f7)" "Night light off"
 }
 

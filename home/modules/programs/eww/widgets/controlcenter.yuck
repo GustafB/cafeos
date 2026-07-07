@@ -16,6 +16,7 @@
 (defpoll air-on   :interval "3s" :initial "false" "bash scripts/airplane.sh --state")
 (defpoll night-on :interval "3s" :initial "false" "bash scripts/nightlight.sh --state")
 (defpoll game-on  :interval "2s" :initial "false" "bash scripts/gamemode.sh --state")
+(defpoll pp-prof  :interval "3s" :initial "none"  "bash scripts/power.sh --get")
 (defpoll idle-on  :interval "3s" :initial "true" "pgrep -x hypridle >/dev/null 2>&1 && echo true || echo false")
 
 ;; notifications (mako)
@@ -125,8 +126,8 @@
         (label :class "cc-cring-ico" :text icon)))
     (label :class "cc-cring-val" :text "${value}%")))
 
-(defwidget cc-chip [icon label active onclick ?tooltip]
-  (eventbox :cursor "pointer"
+(defwidget cc-chip [icon label active onclick ?tooltip ?visible]
+  (eventbox :cursor "pointer" :visible {visible ?: true}
     (button :class {active ? "cc-chip active" : "cc-chip"}
             :onclick onclick :tooltip {tooltip ?: label}
       (box :space-evenly false :spacing 6
@@ -142,6 +143,12 @@
     (box :orientation "v" :space-evenly true :spacing 8 :valign "center"
       (cc-chip :icon "󰺵" :label "Game" :active game-on
                :onclick "bash scripts/gamemode.sh --toggle")
+      (cc-chip :icon {pp-prof == "power-saver" ? "󰾆" : pp-prof == "performance" ? "󰓅" : "󰾅"}
+               :label {pp-prof == "power-saver" ? "Saver" : pp-prof == "performance" ? "Perf" : "Balanced"}
+               :active {pp-prof != "balanced" && pp-prof != "none"}
+               :visible {pp-prof != "none"}
+               :tooltip "Power profile (click to cycle)"
+               :onclick "bash scripts/power.sh --cycle")
       (cc-chip :icon {idle-on ? "󰒲" : "󰅶"} :label {idle-on ? "Idle" : "Awake"} :active {!idle-on}
                :tooltip "Toggle hypridle (auto-lock/sleep)"
                :onclick "pgrep -x hypridle >/dev/null 2>&1 && pkill -x hypridle || (hypridle & disown)"))))

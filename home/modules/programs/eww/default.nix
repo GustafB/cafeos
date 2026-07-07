@@ -24,6 +24,7 @@ let
     "airplane.sh"
     "nightlight.sh"
     "gamemode.sh"
+    "power.sh"
     "mediacontrol.sh"
     "notifications.sh"
   ];
