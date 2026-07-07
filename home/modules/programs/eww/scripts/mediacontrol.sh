@@ -54,3 +54,6 @@ case "$1" in
   --seek) [ -n "$P" ] && playerctl -p "$P" position "$2" ;;   # seconds, absolute
   *) echo "usage: $0 [--player|--status|--title|--artist|--cover|--time|--posseconds|--lenseconds|--shuffle|--loop|--playpause|--next|--prev|--toggle-shuffle|--toggle-loop|--seek N]" ;;
 esac
+
+# no-player is a normal state; a non-zero exit makes eww warn on every poll
+exit 0

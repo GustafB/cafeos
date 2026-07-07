@@ -25,6 +25,7 @@ let
     "nightlight.sh"
     "gamemode.sh"
     "power.sh"
+    "weather.sh"
     "mediacontrol.sh"
     "notifications.sh"
   ];
@@ -114,6 +115,7 @@ in
       .bat-ico { color: ${c.base0B}; }
       .net-ico { color: ${c.base0C}; }
       .vol-ico { color: ${c.base0E}; }
+      .weather-ico { color: ${c.base0A}; }
       .tray { padding: 0 6px; }
 
       /* rebuild overlay: full-screen dark sheet (alpha > layerrule

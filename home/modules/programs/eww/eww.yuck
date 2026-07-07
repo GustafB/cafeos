@@ -16,6 +16,7 @@
 (defpoll bright    :interval "3s"  :initial "-1"  "bash scripts/brightness.sh get")
 (defpoll battery   :interval "10s" :initial "{\"capacity\":0,\"status\":\"None\",\"icon\":\"󰂑\"}" "bash scripts/battery.sh")
 (defpoll wifi-name :interval "10s" :initial "…"    "bash scripts/wifi.sh status")
+(defpoll weather   :interval "15m" :initial "{\"temp\":\"\",\"icon\":\"\",\"desc\":\"\"}" "bash scripts/weather.sh")
 (defpoll wifi-icon :interval "10s" :initial "󰤨"    "bash scripts/wifi.sh icon")
 
 ;; modules
@@ -61,6 +62,12 @@
       (label :class "media-title" :limit-width 18 :show-truncated true
              :text {mc-title != "" ? mc-title : "Music"}))))
 
+(defwidget weather []
+  (box :class "island weather" :space-evenly false :spacing 6
+       :visible {weather.temp != ""} :tooltip {weather.desc}
+    (label :class "ico weather-ico" :text {weather.icon})
+    (label :text {weather.temp})))
+
 (defwidget bat []
   (box :class "island battery" :space-evenly false :spacing 6
        :visible {battery.status != "None"}
@@ -105,6 +112,7 @@
       (window))
     (box :class "sec right" :halign "end" :space-evenly false :spacing 8
       (tray)
+      (weather)
       (net)
       (volume)
       (bat)
